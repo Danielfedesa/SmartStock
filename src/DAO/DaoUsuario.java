@@ -37,6 +37,46 @@ public class DaoUsuario {
 	}
 	
 	/**
+	 * Metodo para iniciar sesion desde Login, buscando un usuario en
+	 * la base de datos a partir de su correo electronico.
+	 * Valida los credenciales y recupera los datos del usuario.
+	 * 
+	 * @param email Correo electronico del usuario que inicia sesion.
+	 * @return Un objeto {@link Usuario} que contiene los datos del usuario
+	 * si se encuentra en la base de datos o {@code null} si no
+	 * existe el usuario en la base de datos.
+	 * @throws SQLException Si hay un error al consultar en la base de datos.
+	 */
+	public Usuario obtenerUsuXMail(String email) throws SQLException {
+		// Consulta SQL.
+		String sql = "SELECT * FROM usuarios WHERE email = ?";
+		
+		// Prepara la consulta.
+		try (PreparedStatement ps = con.prepareStatement(sql)) {
+			
+			// Asigna los parametros a la consulta.
+			ps.setString(1, email);
+			
+			// Ejecuta la consulta y obtiene los resultados en el ResultSet.
+			try(ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					return new Usuario(
+						rs.getInt("id_Usuario"),
+		                rs.getString("nombre_Usuario"),
+		                rs.getString("apellido1"),
+		                rs.getString("apellido2"),
+		                rs.getInt("telefono"),
+		                rs.getString("email"),
+		                rs.getString("contrasena"),
+		                rs.getString("rol")
+		            );
+				}
+			}
+		}
+		return null; // Si no encuentra al usuario
+	}
+	
+	/**
 	 * Metodo para insertar un nuevo usuario en la base de datos. 
 	 * @param u Objeto Usuario para insertar.
 	 * @return ID del usuario insertado.
@@ -44,7 +84,7 @@ public class DaoUsuario {
 	 */
 	public int insertar(Usuario u) throws SQLException {
 		// Sentencia SQL para insertar un nuevo registro en la tabla usuarios.
-		String sql = "INSERT INTO usuarios (nombreUsuario, apellido1, apellido2, telefono, email, contrasena, rol) VALUES (?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO usuarios (nombre_Usuario, apellido1, apellido2, telefono, email, contrasena, rol) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		
 		int id = 0;
 		

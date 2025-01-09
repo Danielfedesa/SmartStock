@@ -1,6 +1,9 @@
 package modelo;
 
+import java.sql.SQLException;
 import java.util.Objects;
+
+import DAO.DaoUsuario;
 
 /**
  * Clase Usuario que representa la informacion,
@@ -244,6 +247,20 @@ public class Usuario {
 		return "Usuario [idUsuario=" + idUsuario + ", nombreUsuario=" + nombreUsuario + ", apellido1=" + apellido1
 				+ ", apellido2=" + apellido2 + ", telefono=" + telefono + ", email=" + email + ", contrasena="
 				+ contrasena + ", Rol=" + Rol + "]";
+	}
+	
+	/**
+     * Metodo para crear un nuevo usuario en la base de datos.
+     * @return int Identificador del usuario insertado
+     * @throws SQLException Si ocurre un error al interactuar con la base de datos
+     */
+	// Crear una instancia de DaoUsuario
+	// Insertar el usuario actual en la base de datos
+	// Retornar el resultado de la inserción
+	public int crearUsuario() throws SQLException {
+		DaoUsuario usu = new DaoUsuario();
+		int id_UsuarioInsertado = usu.insertar(this);
+		return id_UsuarioInsertado;
 	}
 
 } // Class
