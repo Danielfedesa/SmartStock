@@ -155,7 +155,7 @@ public class DaoProducto {
 		}
 	}
 		
-	public static void eliminarProducto(Producto prod) throws SQLException {
+	public static void borrarProducto(Producto prod) throws SQLException {
 		
 		String sql = "DELETE FROM productos WHERE id_Producto = ?";
 		

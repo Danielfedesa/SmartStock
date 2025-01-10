@@ -1,6 +1,11 @@
 package modelo;
 
+import java.sql.SQLException;
 import java.util.Objects;
+
+import com.google.gson.Gson;
+
+import DAO.DaoCategoria;
 
 /**
  * Clase Categoria que representa la informacion,
@@ -134,6 +139,66 @@ public class Categoria {
 	public String toString() {
 		return "Categoria [idCategoria=" + idCategoria + ", nombreCategoria=" + nombreCategoria + ", descripcion="
 				+ descripcion + "]";
+	}
+	
+	/**
+     * Metodo para crear una nueva categoria en la base de datos.
+     * @throws SQLException Si ocurre un error en la base de datos.
+     */
+	public void crearCategoria() throws SQLException {
+		DaoCategoria cat = new DaoCategoria();
+		cat.crearCategoria(this);
+	}
+	
+	/**
+     * Metodo para listar todas las categorias de la BD.
+     * @return String JSON con la lista de categorias.
+     * @throws SQLException Si ocurre un error al interactuar con la base de datos.
+     */
+	public String listarCategorias() throws SQLException {
+		String json = "";
+		Gson objetoGson = new Gson();
+		DaoCategoria resultado = new DaoCategoria();
+		
+		json = objetoGson.toJson(resultado.listar());
+		
+		return json;
+	}
+	
+	/**
+     * Metodo para recuperar una categoria por su ID y cargar sus datos.
+     * @param idCategoria Identificador unico de la categoria.
+     * @throws SQLException Si ocurre un error en la base de datos
+     */
+	public void recuperarCategoria(int idCategoria) throws SQLException {
+		DaoCategoria dao = new DaoCategoria();
+		
+		Categoria c = dao.leerFormulario(idCategoria);
+		
+		this.setIdCategoria(c.getIdCategoria());
+		this.setNombreCategoria(c.getNombreCategoria());
+		this.setDescripcion(c.getDescripcion());
+	}
+	
+	/**
+     * Metodo para insertar la actualizacion de los datos de una categoria en la base de datos.
+     * @return boolean true si la actualizacion fue correcta, false en caso contrario.
+     * @throws SQLException Si ocurre un error al interactuar con la base de datos.
+     */
+	public boolean actualizarCategoria(int idCategoria) throws SQLException {
+		DaoCategoria cat = new DaoCategoria();
+		
+		return cat.actualizarCategoria(this);
+	}
+	
+	/**
+     * Metodo para eliminar una categoria de la base de datos.
+     * @throws SQLException Si hay un error al interactuar con la base de datos.
+     */
+	@SuppressWarnings("static-access")
+	public void eliminarCategoria(int idCategoria) throws SQLException {
+		DaoCategoria elim = new DaoCategoria();
+		elim.borrarCategoria(this);
 	}
 	
 } // Class

@@ -133,6 +133,7 @@ public class Producto {
 		String json = "";
 		Gson objetoGson = new Gson();
 		DaoProducto resultado = new DaoProducto();
+		
 		json = objetoGson.toJson(resultado.listar());
 		
 		return json;
@@ -164,6 +165,7 @@ public class Producto {
      */
 	public boolean actualizarProducto() throws SQLException {
 		DaoProducto daoProd = new DaoProducto();
+		
 		return daoProd.actualizarProducto(this);
 	}
 	
@@ -174,7 +176,7 @@ public class Producto {
 	@SuppressWarnings("static-access")
 	public void eliminarProducto(int idProducto) throws SQLException {
 		DaoProducto elim = new DaoProducto();
-		elim.eliminarProducto(this);
+		elim.borrarProducto(this);
 	}
 	
 } // Class
