@@ -12,8 +12,6 @@ public class Principal {
 
 		
 		/*
-		 * 
-		 
         Usuario u1 = new Usuario();
         u1.setNombreUsuario("Felipe");
         u1.setApellido1("García");
@@ -32,6 +30,7 @@ public class Principal {
 	}
 */
 		
+		/*
 		// Pruebas para iniciar sesion.
 		        try {
 		            // Crear el DAO de Usuario
@@ -57,8 +56,23 @@ public class Principal {
 		        } catch (Exception e) {
 		            System.err.println("Error: " + e.getMessage());
 		        }
-		   
-	
+		    */
+	/*
+		// Pruebas para leer listado usuarios.
+		
+		Usuario lista = new Usuario();
+		
+		try {
+			String listaJson = lista.listarUsuarios();
+			System.out.println("Usuarios registrados en el sistema (JSON)");
+			System.out.println(listaJson);
+		} catch (Exception e) {
+			System.err.println("Operación cancelada" + e.getMessage());
+		}
+		
+		*/
+		
+		
 	
 	} // Main
 } // Class

@@ -3,6 +3,8 @@ package modelo;
 import java.sql.SQLException;
 import java.util.Objects;
 
+import com.google.gson.Gson;
+
 import DAO.DaoUsuario;
 
 /**
@@ -76,6 +78,27 @@ public class Usuario {
 		this.telefono = telefono;
 		this.email = email;
 		this.contrasena = contrasena;
+		Rol = rol;
+	}
+	
+	/**
+	 * Constructor para listar todos los usuarios sin la contrasena.
+	 * @param nombreUsuario Nombre del usuario.
+	 * @param apellido1 Primer apellido del usuario.
+	 * @param apellido2 Segundo apellido del usuario.
+	 * @param telefono Telefono del usuario.
+	 * @param email Correo electronico unico del usuario.
+	 * @param rol Rol del usuario (admin o empleado).
+	 */
+	public Usuario(int idUsuario, String nombreUsuario, String apellido1, String apellido2, int telefono,
+			String email, String rol) {
+		super();
+		this.idUsuario = idUsuario;
+		this.nombreUsuario = nombreUsuario;
+		this.apellido1 = apellido1;
+		this.apellido2 = apellido2;
+		this.telefono = telefono;
+		this.email = email;
 		Rol = rol;
 	}
 
@@ -261,6 +284,68 @@ public class Usuario {
 		DaoUsuario usu = new DaoUsuario();
 		int id_UsuarioInsertado = usu.insertar(this);
 		return id_UsuarioInsertado;
+	}
+	
+	/**
+     * Metodo para listar todos los usuarios registrados en el sistema.
+     * @return String JSON con la lista de usuarios.
+     * @throws SQLException Si ocurre un error al interactuar con la base de datos.
+     */
+	 // Cadena JSON resultante
+	 // Crear objeto Gson
+	 // Crear instancia de DaouSUARIO
+	 // Meter en el objeto json lo que genere el objetoGson con el método toJson (lo convierte a json)
+	 // Convertir la lista de USUARIOS a JSON
+	 // Retornar la cadena JSON
+	public String listarUsuarios() throws SQLException {
+		String json = "";
+		Gson objetoGson = new Gson();
+		DaoUsuario resultado = new DaoUsuario();
+		json = objetoGson.toJson(resultado.listar());
+		return json;
+	}
+	
+	/**
+     * Metodo para recuperar un usuario para modificarlo despues en el formulario.
+     * @param id_Usuario Identificador del usuario a recuperar.
+     * @throws SQLException Si ocurre un error al interactuar con la base de datos.
+     */
+	public void recuperarUsu(int idUsuario) throws SQLException {
+		// Crea instancia de DaoUsuario.
+		DaoUsuario dao = new DaoUsuario();
+		
+		// Lee los datos del usuario desde la base de datos por el idUsuario.
+		// leerUsuario devuelve un objeto Usuario con los datos correspondientes.
+		Usuario u = dao.leerUsuario(idUsuario);
+		
+		// Establecer los datos recuperados en el usuario actual.
+		this.setIdUsuario(u.getIdUsuario());
+		this.setNombreUsuario(u.getNombreUsuario());
+		this.setApellido1(u.getApellido1());
+		this.setApellido2(u.getApellido2());
+		this.setTelefono(u.getTelefono());
+		this.setEmail(u.getEmail());
+		this.setRol(u.getRol());
+	}
+	
+	/**
+     * Metodo para insertar la actualizacion de los datos de un usuario en la base de datos.
+     * @return boolean true si la actualizacion fue correcta, false en caso contrario.
+     * @throws SQLException Si ocurre un error al interactuar con la base de datos.
+     */
+	public boolean actualizarUsuario() throws SQLException {
+		DaoUsuario daoUsu = new DaoUsuario();
+		return daoUsu.actualizarUsuario(this);
+	}
+	
+	/**
+     * Metodo para eliminar un usuario de la base de datos.
+     * @throws SQLException Si hay un error al interactuar con la base de datos.
+     */
+	@SuppressWarnings("static-access")
+	public void eliminarUsuario(int idUsuario) throws SQLException {
+		DaoUsuario elim = new DaoUsuario();
+		elim.eliminarUsuario(this);
 	}
 
 } // Class
