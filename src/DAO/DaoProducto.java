@@ -11,7 +11,7 @@ import modelo.Producto;
 
 /**
  * Clase para realizar operaciones relacionadas con
- * la tabla 'prudoctos' en la base de datos.
+ * la tabla 'pruductos' en la base de datos.
  * @author Daniel Fernandez Sanchez
  * @version 1.0 01/2025
  */
