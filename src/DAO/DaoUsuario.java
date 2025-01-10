@@ -11,15 +11,15 @@ import controlador.ConexionDB;
 import modelo.Usuario;
 
 /**
- * Clase para realizar operaciones relacionadas con la tabla 'usuarios'
- * en la base de datos.
+ * Clase para realizar operaciones relacionadas con
+ * la tabla 'usuarios' en la base de datos.
  * @author Daniel Fernandez Sanchez
  * @version 1.0 01/2025
  */
 public class DaoUsuario {
 
 	/**
-	 * Atributo estatico que gestiona la conexion a la base de datos
+	 * Atributo estatico que gestiona la conexion a la base de datos.
 	 * en toda la aplicacion, permitiendo la reutilizacion de la misma conexion.
 	 * Inicialmente la instancia esta establecida en null.
 	 * @see java.sql.Connection
@@ -33,6 +33,7 @@ public class DaoUsuario {
 	 * conecta a ConexionDB.getConexion() automaticamente.
 	 * @throws SQLException Si hay un error de conexion.
 	 */
+	@SuppressWarnings("static-access")
 	public DaoUsuario() throws SQLException {
 		this.con = ConexionDB.getConexion();
 	}
@@ -102,6 +103,7 @@ public class DaoUsuario {
 		ps.setString(7, u.getRol());
 		
 		// Ejecuta la sentencia y actualiza el numero de filas afectadas.
+		@SuppressWarnings("unused")
 		int filas = ps.executeUpdate();
 		
 		// Obtiene el ID generado.
@@ -201,7 +203,7 @@ public class DaoUsuario {
 		
 		// Sentencia para actualizar un registro de la tabla usuarios por su ID.
 		try {
-			String sql = "UPDATE usuarios SET nombre =?, apellido1 =?, apellido2 =?,"
+			String sql = "UPDATE usuarios SET nombre_Usuario =?, apellido1 =?, apellido2 =?,"
 					+ "telefono =?, email =?, rol =? WHERE id_Usuario =?";
 			
 			// Prepara la sentencia SQL.
@@ -222,8 +224,8 @@ public class DaoUsuario {
 			// Comprueba si se ha insertado correctamente y devuelve true o false.
 			if (rs == 1) {
 				return true;
-			} else {
-				return false;
+				} else {
+					return false;
 			}
 			
 		} catch (SQLException e) {
@@ -249,6 +251,7 @@ public class DaoUsuario {
 		ps.setInt(1, user.getIdUsuario());
 		
 		// Ejecuta la sentencia.
+		@SuppressWarnings("unused")
 		int filas = ps.executeUpdate();
 		
 		ps.close();

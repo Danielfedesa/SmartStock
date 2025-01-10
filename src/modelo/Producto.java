@@ -1,6 +1,11 @@
 package modelo;
 
+import java.sql.SQLException;
 import java.util.Objects;
+
+import com.google.gson.Gson;
+
+import DAO.DaoProducto;
 
 public class Producto {
 
@@ -108,6 +113,68 @@ public class Producto {
 		return "Producto [idProducto=" + idProducto + ", nombreProducto=" + nombreProducto + ", descripcion="
 				+ descripcion + ", precio=" + precio + ", stock=" + stock + ", stockMinimo=" + stockMinimo
 				+ ", idCategoria=" + idCategoria + "]";
+	}
+	
+	/**
+     * Metodo para insertar un producto en la base de datos.
+     * @throws SQLException Si ocurre un error en la base de datos.
+     */
+	public void crearProducto() throws SQLException {
+		DaoProducto prod = new DaoProducto();
+		prod.insertar(this);
+	}
+	
+	/**
+     * Metodo para listar todos los productos almacenados en la BD.
+     * @return String JSON con la lista de productos.
+     * @throws SQLException Si ocurre un error al interactuar con la base de datos.
+     */
+	public String listarProductos() throws SQLException {
+		String json = "";
+		Gson objetoGson = new Gson();
+		DaoProducto resultado = new DaoProducto();
+		json = objetoGson.toJson(resultado.listar());
+		
+		return json;
+	}
+	
+	/**
+     * Metodo para recuperar un producto por su ID y cargar sus datos.
+     * @param idProducto Identificador unico del producto.
+     * @throws SQLException Si ocurre un error en la base de datos
+     */
+	public void recuperarProd(int idProducto) throws SQLException {
+		DaoProducto dao = new DaoProducto();
+		
+		Producto p = dao.leerFormulario(idProducto);
+		
+		this.setIdProducto(p.getIdProducto());
+		this.setNombreProducto(p.getNombreProducto());
+		this.setDescripcion(p.getDescripcion());
+		this.setPrecio(p.getPrecio());
+		this.setStock(p.getStock());
+		this.setStockMinimo(p.getStockMinimo());
+		this.setIdCategoria(p.getIdCategoria());
+	}
+	
+	/**
+     * Metodo para insertar la actualizacion de los datos de un producto en la base de datos.
+     * @return boolean true si la actualizacion fue correcta, false en caso contrario.
+     * @throws SQLException Si ocurre un error al interactuar con la base de datos.
+     */
+	public boolean actualizarProducto() throws SQLException {
+		DaoProducto daoProd = new DaoProducto();
+		return daoProd.actualizarProducto(this);
+	}
+	
+	/**
+     * Metodo para eliminar un producto de la base de datos.
+     * @throws SQLException Si hay un error al interactuar con la base de datos.
+     */
+	@SuppressWarnings("static-access")
+	public void eliminarProducto(int idProducto) throws SQLException {
+		DaoProducto elim = new DaoProducto();
+		elim.eliminarProducto(this);
 	}
 	
 } // Class

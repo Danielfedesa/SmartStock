@@ -3,6 +3,7 @@ package controlador;
 import java.sql.SQLException;
 
 import DAO.DaoUsuario;
+import modelo.Producto;
 import modelo.Usuario;
 
 public class Principal {
@@ -57,20 +58,20 @@ public class Principal {
 		            System.err.println("Error: " + e.getMessage());
 		        }
 		    */
-	/*
+	
 		// Pruebas para leer listado usuarios.
 		
-		Usuario lista = new Usuario();
+		Producto lista = new Producto();
 		
 		try {
-			String listaJson = lista.listarUsuarios();
+			String listaJson = lista.listarProductos();
 			System.out.println("Usuarios registrados en el sistema (JSON)");
 			System.out.println(listaJson);
 		} catch (Exception e) {
 			System.err.println("Operación cancelada" + e.getMessage());
 		}
 		
-		*/
+		
 		
 		
 	

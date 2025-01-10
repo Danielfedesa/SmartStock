@@ -21,7 +21,7 @@ CREATE TABLE Categorias (
 
 CREATE TABLE Productos (
     id_Producto INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    nombre_producto VARCHAR(100) NOT NULL,
+    nombre_Producto VARCHAR(100) NOT NULL,
     descripcion TEXT,
     precio DECIMAL(10,2) NOT NULL,
     stock INT NOT NULL,
@@ -75,7 +75,7 @@ VALUES
 ('Calzado4', 'Botines de media caña')
 ;
 
-INSERT INTO Productos (nombre_producto, descripcion, precio, stock, id_Categoria)
+INSERT INTO Productos (nombre_Producto, descripcion, precio, stock, id_Categoria)
 VALUES
 ('Camiseta Básica Blanca', 'Camiseta de algodón básica, manga corta', 12.99, 50, 1),
 ('Camiseta Manga Larga Negra', 'Camiseta de algodón negra, manga larga', 15.99, 30, 2),

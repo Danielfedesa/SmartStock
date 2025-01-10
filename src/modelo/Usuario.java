@@ -302,6 +302,7 @@ public class Usuario {
 		Gson objetoGson = new Gson();
 		DaoUsuario resultado = new DaoUsuario();
 		json = objetoGson.toJson(resultado.listar());
+		
 		return json;
 	}
 	
