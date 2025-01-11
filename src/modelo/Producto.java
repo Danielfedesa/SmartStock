@@ -1,6 +1,7 @@
 package modelo;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Objects;
 
 import com.google.gson.Gson;
@@ -177,6 +178,27 @@ public class Producto {
 	public void eliminarProducto(int idProducto) throws SQLException {
 		DaoProducto elim = new DaoProducto();
 		elim.borrarProducto(this);
+	}
+	
+	/**
+	 * Metodo para verificar si algun producto tiene stock por debajo del minimo.
+	 * @return String Detalles de los productos con stock bajo, o un mensaje vacio si no hay alertas.
+	 * @throws SQLException Si ocurre un error al interactuar con la base de datos.
+	 */
+	public String verificarStockMinimo() throws SQLException {
+		DaoProducto daoProd = new DaoProducto();
+		List<Producto> productos = daoProd.listarMinimo(); // Obtiene la lista de todos los productos.
+		StringBuilder alertas = new StringBuilder();
+		
+		for (Producto producto : productos) {
+			if (producto.getStock() < producto.getStockMinimo()) {
+				alertas.append("Producto: ").append(producto.getNombreProducto())
+						.append(", Stock actual: ").append(producto.getStock())
+						.append(", Stock mínimo: ").append(producto.getStockMinimo()).append("\n");
+			}
+		}
+		
+		return alertas.toString();
 	}
 	
 } // Class
