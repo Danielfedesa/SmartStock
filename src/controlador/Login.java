@@ -28,30 +28,33 @@ public class Login {
 		this.usuarioDao = usuarioDao;
 	}
 	
-	 /**
-     * Método para iniciar sesión en el sistema.
+	// Constructor sin parámetros
+    public Login() {
+        try {
+            // Inicializa el DAO internamente
+            this.usuarioDao = new DaoUsuario();
+        } catch (Exception e) {
+            throw new RuntimeException("Error al inicializar el DAO: " + e.getMessage());
+        }
+    }
+	
+	/**
+	 * Método para iniciar sesión en el sistema.
      * Valida las credenciales proporcionadas (correo electronico y contrasena)
-     * y devuelve el objeto Usuario si son correctas.
+     * y devuelve el objeto Usuario con el Rol si son correctas.
      * En caso contrario, devuelve {@code null}.
      * 
-     * @param email El correo electronico del usuario que intenta iniciar sesion.
-     * @param contrasena La contrasena del usuario que intenta iniciar sesion.
-     * @return Un objeto {@link Usuario} si las credenciales son validas, o {@code null} si no lo son.
-     */
-	public Usuario iniciarSesion(String email, String contrasena) {
-		try {
-			// Llama al metodo del DAO para obtener el usuario por su email.
-			Usuario usu = usuarioDao.obtenerUsuXMail(email);
-			
-			// Comprueba si el usuario existe y si la contrasena coincide.
-			if (usu != null && usu.getContrasena().equals(contrasena)) {
-				return usu; // Retorna el objeto Usuario si las credenciales son validas.
-			}
-		} catch (Exception e) {
-			System.err.println("Error de inicio de sesión: " + e.getMessage());
-		}
-		// Devuelve null si las credenciales no son validas o si ocurre un error.
-				return null;
-	}
+	 * @param email El correo electronico del usuario que intenta iniciar sesion.
+	 * @param contrasena La contrasena del usuario que intenta iniciar sesion.
+	 * @return Un objeto {@link Usuario} si las credenciales son validas, o {@code null} si no lo son.
+	 */
+	public String iniciarSesion(String email, String contrasena) {
+        try {
+            return usuarioDao.validarCredenciales(email, contrasena);
+        } catch (Exception e) {
+            System.err.println("Error al validar las credenciales: " + e.getMessage());
+            return null;
+        }
+    }
 	
 } // Class
