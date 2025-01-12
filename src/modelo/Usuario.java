@@ -1,9 +1,8 @@
 package modelo;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Objects;
-
-import com.google.gson.Gson;
 
 import DAO.DaoUsuario;
 
@@ -286,6 +285,7 @@ public class Usuario {
 		return id_UsuarioInsertado;
 	}
 	
+	
 	/**
      * Metodo para listar todos los usuarios registrados en el sistema.
      * @return String JSON con la lista de usuarios.
@@ -297,6 +297,7 @@ public class Usuario {
 	 // Meter en el objeto json lo que genere el objetoGson con el método toJson (lo convierte a json)
 	 // Convertir la lista de USUARIOS a JSON
 	 // Retornar la cadena JSON
+	/*
 	public String listarUsuarios() throws SQLException {
 		String json = "";
 		Gson objetoGson = new Gson();
@@ -305,12 +306,19 @@ public class Usuario {
 		
 		return json;
 	}
+	*/
+	
+	public List<Usuario> listarUsuarios() throws SQLException {
+	    DaoUsuario daoUsuario = new DaoUsuario();
+	    return daoUsuario.listar(); // Devuelve directamente la lista desde el DAO
+	}
 	
 	/**
      * Metodo para recuperar un usuario para modificarlo despues en el formulario.
      * @param id_Usuario Identificador del usuario a recuperar.
      * @throws SQLException Si ocurre un error al interactuar con la base de datos.
      */
+	/*
 	public void recuperarUsu(int idUsuario) throws SQLException {
 		// Crea instancia de DaoUsuario.
 		DaoUsuario dao = new DaoUsuario();
@@ -327,6 +335,18 @@ public class Usuario {
 		this.setTelefono(u.getTelefono());
 		this.setEmail(u.getEmail());
 		this.setRol(u.getRol());
+	}
+	
+	*/
+	public Usuario recuperarUsu(int idUsuario) throws SQLException {
+	    // Crea instancia de DaoUsuario.
+	    DaoUsuario dao = new DaoUsuario();
+
+	    // Lee los datos del usuario desde la base de datos por el idUsuario.
+	    Usuario u = dao.leerUsuario(idUsuario);
+
+	    // Devuelve el objeto Usuario recuperado.
+	    return u;
 	}
 	
 	/**
@@ -346,7 +366,7 @@ public class Usuario {
 	@SuppressWarnings("static-access")
 	public void eliminarUsuario(int idUsuario) throws SQLException {
 		DaoUsuario elim = new DaoUsuario();
-		elim.eliminarUsuario(this);
+		elim.eliminarUsuario(idUsuario);
 	}
 
 } // Class

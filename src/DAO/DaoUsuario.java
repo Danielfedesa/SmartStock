@@ -97,14 +97,14 @@ public class DaoUsuario {
 	}
 	
 	/**
-	 * Metodo para listar todos los usuarios de la base de datos. 
+	 * Metodo para listar todos los usuarios de la base de datos sin la contrasena. 
 	 * @return ArrayList de Usuario con los datos de los usuarios.
 	 * @throws SQLException Si hay un error de lectura en base de datos
 	 */
 	public ArrayList<Usuario> listar() throws SQLException {
 		
 		// Sentencia para seleccionar todos los registros.
-		String sql = "SELECT * FROM usuarios ";
+		String sql = "SELECT id_Usuario, nombre_Usuario, apellido1, apellido2, telefono, email, rol FROM usuarios ";
 		
 		// Prepara la sentencia SQL.
 		PreparedStatement ps = con.prepareStatement(sql);
@@ -146,7 +146,7 @@ public class DaoUsuario {
 	 */
 	public Usuario leerUsuario(int idUsuario) throws SQLException {
 		// Sentencia para seleccionar un registro en la bd.
-		String sql = "SELECT * FROM usuarios WHERE id_Usuario=?";
+		String sql = "SELECT id_Usuario, nombre_Usuario, apellido1, apellido2, telefono, email, rol FROM usuarios WHERE id_Usuario=?";
 		
 		// Prepara la sentencia SQL.
 		PreparedStatement ps = con.prepareStatement(sql);
@@ -219,7 +219,7 @@ public class DaoUsuario {
 	 * @param e Objeto Usuario para eliminar.
 	 * @throws SQLException Si hay un error de eliminacion en base de datos.
 	 */
-	public static void eliminarUsuario(Usuario user) throws SQLException {
+	public static void eliminarUsuario(int idUsuario) throws SQLException {
 		// Sentencia para eliminar un registro de la tabla usuarios por su ID.
 		String sql = "DELETE FROM usuarios WHERE id_Usuario = ?";
 		
@@ -227,7 +227,7 @@ public class DaoUsuario {
 		PreparedStatement ps = con.prepareStatement(sql);
 		
 		// Manda el preparedStatement y el id.
-		ps.setInt(1, user.getIdUsuario());
+		ps.setInt(1, idUsuario);
 		
 		// Ejecuta la sentencia.
 		@SuppressWarnings("unused")

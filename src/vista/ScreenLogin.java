@@ -42,6 +42,7 @@ public class ScreenLogin extends JFrame {
 		Color botonColor = new Color(70, 130, 180);
 		Color textoBotonColor = Color.white;
 		Font fuenteTitulo = new Font("Arial", Font.BOLD, 24);
+		Font fuenteSubtitulo = new Font("Arial", Font.BOLD, 16);
 		Font fuenteTextos = new Font("Arial", Font.PLAIN, 16);
 		
 		// Configuración del fondo
@@ -53,15 +54,19 @@ public class ScreenLogin extends JFrame {
 
         // Panel del formulario con tamaño fijo
         JPanel panelFormulario = new JPanel();
-        panelFormulario.setPreferredSize(new Dimension(400, 300)); // Tamaño fijo
+        panelFormulario.setPreferredSize(new Dimension(400, 600)); // Tamaño fijo
         panelFormulario.setBackground(fondoColor);
         panelFormulario.setLayout(new GridBagLayout());
         panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 	     
 	     // Componentes
-	     JLabel tituloLabel = new JLabel("Gestión de inventarios", SwingConstants.CENTER);
+	     JLabel tituloLabel = new JLabel("Bienvenido a SmartStock", SwingConstants.CENTER);
 	     tituloLabel.setFont(fuenteTitulo);
 	     tituloLabel.setForeground(Color.DARK_GRAY);
+	     
+	     JLabel subtituloLabel = new JLabel("Introduzca sus credenciales para acceder al sistema.", SwingConstants.CENTER);
+	     subtituloLabel.setFont(fuenteSubtitulo);
+	     subtituloLabel.setForeground(Color.DARK_GRAY);
 	     
 	     JTextField usuario = new JTextField();
 	     usuario.setBorder(BorderFactory.createTitledBorder("Correo electrónico"));
@@ -141,8 +146,12 @@ public class ScreenLogin extends JFrame {
 	        gbc.insets = new Insets(10, 10, 10, 10); // Margen entre componentes
 	        gbc.fill = GridBagConstraints.HORIZONTAL;
 	        gbc.gridx = 0;
+	        
 	        gbc.gridy = 0;
 	        panelFormulario.add(tituloLabel, gbc);
+	        
+	        gbc.gridy++;
+	        panelFormulario.add(subtituloLabel, gbc);
 
 	        gbc.gridy++;
 	        panelFormulario.add(usuario, gbc);
