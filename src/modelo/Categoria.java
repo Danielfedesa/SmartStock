@@ -1,9 +1,8 @@
 package modelo;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Objects;
-
-import com.google.gson.Gson;
 
 import DAO.DaoCategoria;
 
@@ -155,14 +154,9 @@ public class Categoria {
      * @return String JSON con la lista de categorias.
      * @throws SQLException Si ocurre un error al interactuar con la base de datos.
      */
-	public String listarCategorias() throws SQLException {
-		String json = "";
-		Gson objetoGson = new Gson();
-		DaoCategoria resultado = new DaoCategoria();
-		
-		json = objetoGson.toJson(resultado.listar());
-		
-		return json;
+	public List<Categoria> listarCategorias() throws SQLException {
+		DaoCategoria daoCategoria = new DaoCategoria();
+		return daoCategoria.listar();
 	}
 	
 	/**
@@ -170,14 +164,23 @@ public class Categoria {
      * @param idCategoria Identificador unico de la categoria.
      * @throws SQLException Si ocurre un error en la base de datos
      */
+	/*
 	public void recuperarCategoria(int idCategoria) throws SQLException {
 		DaoCategoria dao = new DaoCategoria();
 		
-		Categoria c = dao.leerFormulario(idCategoria);
+		Categoria c = dao.leerCategoria(idCategoria);
 		
 		this.setIdCategoria(c.getIdCategoria());
 		this.setNombreCategoria(c.getNombreCategoria());
 		this.setDescripcion(c.getDescripcion());
+	}
+	*/
+	
+	public Categoria recuperarCat(int idCategoria) throws SQLException {
+		DaoCategoria dao = new DaoCategoria();
+		Categoria c = dao.leerCategoria(idCategoria);
+		
+		return c;
 	}
 	
 	/**
@@ -185,10 +188,10 @@ public class Categoria {
      * @return boolean true si la actualizacion fue correcta, false en caso contrario.
      * @throws SQLException Si ocurre un error al interactuar con la base de datos.
      */
-	public boolean actualizarCategoria(int idCategoria) throws SQLException {
-		DaoCategoria cat = new DaoCategoria();
+	public boolean actualizarCategoria() throws SQLException {
+		DaoCategoria daoCat = new DaoCategoria();
 		
-		return cat.actualizarCategoria(this);
+		return daoCat.actualizarCategoria(this);
 	}
 	
 	/**
@@ -198,7 +201,7 @@ public class Categoria {
 	@SuppressWarnings("static-access")
 	public void eliminarCategoria(int idCategoria) throws SQLException {
 		DaoCategoria elim = new DaoCategoria();
-		elim.borrarCategoria(this);
+		elim.borrarCategoria(idCategoria);
 	}
 	
 } // Class

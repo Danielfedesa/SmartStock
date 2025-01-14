@@ -293,7 +293,7 @@ public class Usuario {
      */
 	 // Cadena JSON resultante
 	 // Crear objeto Gson
-	 // Crear instancia de DaouSUARIO
+	 // Crear instancia de DaoSUARIO
 	 // Meter en el objeto json lo que genere el objetoGson con el método toJson (lo convierte a json)
 	 // Convertir la lista de USUARIOS a JSON
 	 // Retornar la cadena JSON
@@ -356,6 +356,7 @@ public class Usuario {
      */
 	public boolean actualizarUsuario() throws SQLException {
 		DaoUsuario daoUsu = new DaoUsuario();
+		
 		return daoUsu.actualizarUsuario(this);
 	}
 	

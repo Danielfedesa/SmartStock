@@ -33,8 +33,6 @@ public class ScreenDashboard extends JFrame {
 		Color botonColor = new Color(70, 130, 180);
 		Color textoBotonColor = Color.white;
 		Font fuenteTitulo = new Font("Arial", Font.BOLD, 24);
-		Font fuenteSubtitulo = new Font("Arial", Font.BOLD, 16);
-		Font fuenteTextos = new Font("Arial", Font.PLAIN, 16);
 		Font fuenteBotones = new Font("Arial", Font.PLAIN, 16);
 				
 		// Configuración del fondo

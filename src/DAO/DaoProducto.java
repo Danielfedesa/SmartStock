@@ -98,7 +98,7 @@ public class DaoProducto {
 	 * @return Objeto Producto con los datos del producto leidos.
 	 * @throws SQLException Si hay un error de lectura
 	 */
-	public Producto leerFormulario(int idProducto) throws SQLException {
+	public Producto leerProducto(int idProducto) throws SQLException {
 		
 		String sql = "SELECT * FROM productos WHERE id_Producto = ?";
 		
@@ -129,7 +129,7 @@ public class DaoProducto {
 			
 		
 		String sql = "UPDATE productos SET nombre_Producto = ?, descripcion = ?, "
-				+ "precio = ?, stock = ?, stock_Minimo = ?, id_Categoria = ?";
+				+ "precio = ?, stock = ?, stock_Minimo = ?, id_Categoria = ? WHERE id_Producto = ?";
 		
 		PreparedStatement ps = con.prepareStatement(sql);
 		
@@ -139,6 +139,7 @@ public class DaoProducto {
 		ps.setInt(4, prod.getStock());
 		ps.setInt(5, prod.getStockMinimo());
 		ps.setInt(6, prod.getIdCategoria());
+		ps.setInt(7,  prod.getIdProducto());
 		
 		int rs = ps.executeUpdate();
 		
@@ -155,13 +156,13 @@ public class DaoProducto {
 		}
 	}
 		
-	public static void borrarProducto(Producto prod) throws SQLException {
+	public static void borrarProducto(int idProducto) throws SQLException {
 		
 		String sql = "DELETE FROM productos WHERE id_Producto = ?";
 		
 		PreparedStatement ps = con.prepareStatement(sql);
 		
-		ps.setInt(1, prod.getIdProducto());
+		ps.setInt(1, idProducto);
 		
 		@SuppressWarnings("unused")
 		int filas = ps.executeUpdate();

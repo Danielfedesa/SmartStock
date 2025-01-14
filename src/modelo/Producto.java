@@ -130,7 +130,7 @@ public class Producto {
      * @return String JSON con la lista de productos.
      * @throws SQLException Si ocurre un error al interactuar con la base de datos.
      */
-	public String listarProductos() throws SQLException {
+	public String listarProductosMal() throws SQLException {
 		String json = "";
 		Gson objetoGson = new Gson();
 		DaoProducto resultado = new DaoProducto();
@@ -140,11 +140,18 @@ public class Producto {
 		return json;
 	}
 	
+	
+	public List<Producto> listarProductos() throws SQLException {
+		DaoProducto daoProducto = new DaoProducto();
+		return daoProducto.listar();
+	}
+	
 	/**
      * Metodo para recuperar un producto por su ID y cargar sus datos.
      * @param idProducto Identificador unico del producto.
      * @throws SQLException Si ocurre un error en la base de datos
      */
+	/*
 	public void recuperarProd(int idProducto) throws SQLException {
 		DaoProducto dao = new DaoProducto();
 		
@@ -158,6 +165,13 @@ public class Producto {
 		this.setStockMinimo(p.getStockMinimo());
 		this.setIdCategoria(p.getIdCategoria());
 	}
+	*/
+	
+	public Producto recuperarPro(int idProducto) throws SQLException {
+	    DaoProducto dao = new DaoProducto();
+	    Producto p = dao.leerProducto(idProducto);
+	    return p;
+	}
 	
 	/**
      * Metodo para insertar la actualizacion de los datos de un producto en la base de datos.
@@ -166,7 +180,6 @@ public class Producto {
      */
 	public boolean actualizarProducto() throws SQLException {
 		DaoProducto daoProd = new DaoProducto();
-		
 		return daoProd.actualizarProducto(this);
 	}
 	
@@ -177,7 +190,7 @@ public class Producto {
 	@SuppressWarnings("static-access")
 	public void eliminarProducto(int idProducto) throws SQLException {
 		DaoProducto elim = new DaoProducto();
-		elim.borrarProducto(this);
+		elim.borrarProducto(idProducto);
 	}
 	
 	/**

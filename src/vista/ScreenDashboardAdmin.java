@@ -16,6 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import modelo.Categoria;
+import modelo.Producto;
 import modelo.Usuario;
 
 public class ScreenDashboardAdmin extends JFrame {
@@ -38,8 +40,6 @@ public class ScreenDashboardAdmin extends JFrame {
 		Color botonColor = new Color(70, 130, 180);
 		Color textoBotonColor = Color.white;
 		Font fuenteTitulo = new Font("Arial", Font.BOLD, 24);
-		Font fuenteSubtitulo = new Font("Arial", Font.BOLD, 16);
-		Font fuenteTextos = new Font("Arial", Font.PLAIN, 16);
 		Font fuenteBotones = new Font("Arial", Font.PLAIN, 16);
 				
 		// Configuración del fondo
@@ -143,13 +143,15 @@ public class ScreenDashboardAdmin extends JFrame {
 	    }
 
 	    private void abrirGestionCategorias() {
-	        // Lógica para abrir la pantalla de gestión de categorías
-	        JOptionPane.showMessageDialog(this, "Abrir Gestión de Categorías");
+	        Categoria cat = new Categoria();
+	        new ScreenGCategorias(cat).setVisible(true);
+	        this.dispose();
 	    }
 
 	    private void abrirGestionProductos() {
-	        // Lógica para abrir la pantalla de gestión de productos
-	        JOptionPane.showMessageDialog(this, "Abrir Gestión de Productos");
+	        Producto pro = new Producto();
+	        new ScreenGProductos(pro).setVisible(true);
+	        this.dispose();
 	    }
 
 	    private void abrirInventario() {

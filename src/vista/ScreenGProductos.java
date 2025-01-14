@@ -20,19 +20,19 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
-import modelo.Usuario;
+import modelo.Producto;
 
-public class ScreenGUsuarios extends JFrame {
+public class ScreenGProductos extends JFrame {
 
     private static final long serialVersionUID = 1L;
-    private Usuario usuario; // Controlador que maneja la lógica relacionada con usuarios.
-    private JTable tablaUsuarios; // Tabla para mostrar la lista de usuarios.
+    private Producto producto; // Controlador que maneja la lógica relacionada con productos.
+    private JTable tablaProductos; // Tabla para mostrar la lista de productos.
 
-    public ScreenGUsuarios(Usuario usuario) {
-        this.usuario = usuario;
+    public ScreenGProductos(Producto producto) {
+        this.producto = producto;
 
         // Configuración básica de la ventana.
-        setTitle("SmartStock - Gestión de Usuarios");
+        setTitle("SmartStock - Gestión de Productos");
         setSize(1350, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -61,7 +61,7 @@ public class ScreenGUsuarios extends JFrame {
         gbcSuperior.fill = GridBagConstraints.HORIZONTAL; // Ajuste horizontal
 
         // Título de la pantalla
-        JLabel tituloLabel = new JLabel("Gestión de Usuarios", JLabel.CENTER);
+        JLabel tituloLabel = new JLabel("Gestión de Productos", JLabel.CENTER);
         tituloLabel.setFont(fuenteTitulo);
         tituloLabel.setForeground(Color.DARK_GRAY);
         gbcSuperior.gridx = 0;
@@ -94,7 +94,7 @@ public class ScreenGUsuarios extends JFrame {
         contenedor.add(panelSuperior, BorderLayout.NORTH);
 
         // Modelo de la tabla con columnas específicas.
-        String[] columnas = {"ID", "Nombre", "Apellido 1", "Apellido 2", "Teléfono", "Email", "Rol", "Editar", "Eliminar"};
+        String[] columnas = {"ID", "Nombre", "Descripción", "Precio", "Stock", "Stock MIN", "ID Cat", "Editar", "Eliminar"};
         DefaultTableModel modeloTabla = new DefaultTableModel(columnas, 0) {
             /**
 			 * 
@@ -108,28 +108,28 @@ public class ScreenGUsuarios extends JFrame {
             }
         };
 
-        // Inicialización de la tabla de usuarios.
-        tablaUsuarios = new JTable(modeloTabla);
-        tablaUsuarios.setRowHeight(30);
-        tablaUsuarios.setFont(new Font("Arial", Font.PLAIN, 12));
-        tablaUsuarios.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        // Inicialización de la tabla de productos.
+        tablaProductos = new JTable(modeloTabla);
+        tablaProductos.setRowHeight(30);
+        tablaProductos.setFont(new Font("Arial", Font.PLAIN, 12));
+        tablaProductos.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
         
      // Configuración de ancho fijo para las columnas
-        tablaUsuarios.getColumnModel().getColumn(0).setPreferredWidth(20);  // Columna ID
-        tablaUsuarios.getColumnModel().getColumn(1).setPreferredWidth(150); // Columna Nombre
-        tablaUsuarios.getColumnModel().getColumn(2).setPreferredWidth(150); // Columna Apellido 1
-        tablaUsuarios.getColumnModel().getColumn(3).setPreferredWidth(150); // Columna Apellido 2
-        tablaUsuarios.getColumnModel().getColumn(4).setPreferredWidth(70); // Columna Teléfono
-        tablaUsuarios.getColumnModel().getColumn(5).setPreferredWidth(250); // Columna Email
-        tablaUsuarios.getColumnModel().getColumn(6).setPreferredWidth(100); // Columna Rol
-        tablaUsuarios.getColumnModel().getColumn(7).setPreferredWidth(80); // Botón Editar
-        tablaUsuarios.getColumnModel().getColumn(8).setPreferredWidth(80); // Botón Eliminar
+        tablaProductos.getColumnModel().getColumn(0).setPreferredWidth(10);  // Columna ID
+        tablaProductos.getColumnModel().getColumn(1).setPreferredWidth(200); // Columna Nombre
+        tablaProductos.getColumnModel().getColumn(2).setPreferredWidth(400); // Columna Descripcion
+        tablaProductos.getColumnModel().getColumn(3).setPreferredWidth(20); // Columna Precio
+        tablaProductos.getColumnModel().getColumn(4).setPreferredWidth(20); // Columna Stock
+        tablaProductos.getColumnModel().getColumn(5).setPreferredWidth(20); // Columna Stock Minimo
+        tablaProductos.getColumnModel().getColumn(6).setPreferredWidth(10); // Columna ID Categoria
+        tablaProductos.getColumnModel().getColumn(7).setPreferredWidth(40); // Botón Editar
+        tablaProductos.getColumnModel().getColumn(8).setPreferredWidth(40); // Botón Eliminar
 
         // Rellenar la tabla con datos desde el backend.
         cargarDatosTabla(modeloTabla);
 
         // Renderizador y editor para el botón "Editar".
-        tablaUsuarios.getColumnModel().getColumn(7).setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
+        tablaProductos.getColumnModel().getColumn(7).setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
             JButton botonEditar = new JButton("Editar");
             botonEditar.setBackground(botonColor);
             botonEditar.setForeground(textoBotonColor);
@@ -137,7 +137,7 @@ public class ScreenGUsuarios extends JFrame {
         });
 
      // Renderizador y editor para el botón "Editar".
-        tablaUsuarios.getColumnModel().getColumn(7).setCellEditor(new javax.swing.DefaultCellEditor(new JTextField()) {
+        tablaProductos.getColumnModel().getColumn(7).setCellEditor(new javax.swing.DefaultCellEditor(new JTextField()) {
             /**
 			 * 
 			 */
@@ -149,22 +149,22 @@ public class ScreenGUsuarios extends JFrame {
                 botonEditar.setBackground(botonColor);
                 botonEditar.setForeground(textoBotonColor);
                 botonEditar.addActionListener(e -> {
-                    int idUsuario = Integer.parseInt(table.getValueAt(row, 0).toString());
-                    abrirFormularioEdicion(idUsuario); // Abrir formulario de edición con el ID seleccionado.
+                    int idProducto = Integer.parseInt(table.getValueAt(row, 0).toString());
+                    abrirFormularioEdicion(idProducto); // Abrir formulario de edición con el ID seleccionado.
                 });
                 return botonEditar;
             }
         });
 
      // Renderizador y editor para el botón "Eliminar".
-        tablaUsuarios.getColumnModel().getColumn(8).setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
+        tablaProductos.getColumnModel().getColumn(8).setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
             JButton botonEliminar = new JButton("Eliminar");
             botonEliminar.setBackground(Color.RED);
             botonEliminar.setForeground(Color.WHITE);
             return botonEliminar;
         });
 
-        tablaUsuarios.getColumnModel().getColumn(8).setCellEditor(new javax.swing.DefaultCellEditor(new JTextField()) {
+        tablaProductos.getColumnModel().getColumn(8).setCellEditor(new javax.swing.DefaultCellEditor(new JTextField()) {
             /**
 			 * 
 			 */
@@ -177,25 +177,25 @@ public class ScreenGUsuarios extends JFrame {
                 botonEliminar.setForeground(Color.WHITE);
 
                 botonEliminar.addActionListener(e -> {
-                    int idUsuario = Integer.parseInt(table.getValueAt(row, 0).toString()); // Obtiene el ID del usuario.
+                    int idProducto = Integer.parseInt(table.getValueAt(row, 0).toString()); // Obtiene el ID del producto.
                     int confirmacion = JOptionPane.showConfirmDialog(
                         null,
-                        "¿Estás seguro de que deseas eliminar este usuario?",
+                        "¿Estás seguro de que deseas eliminar este producto?",
                         "Confirmar eliminación",
                         JOptionPane.YES_NO_OPTION
                     );
 
                     if (confirmacion == JOptionPane.YES_OPTION) {
                         try {
-                            usuario.eliminarUsuario(idUsuario); // Llama al método para eliminar el usuario.
-                            JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente.");
+                            producto.eliminarProducto(idProducto); // Llama al método para eliminar el producto.
+                            JOptionPane.showMessageDialog(null, "Producto eliminado correctamente.");
                             
                             // Recargar la tabla con los datos actualizados.
-                            DefaultTableModel modeloTabla = (DefaultTableModel) tablaUsuarios.getModel();
+                            DefaultTableModel modeloTabla = (DefaultTableModel) tablaProductos.getModel();
                             modeloTabla.setRowCount(0); // Limpia la tabla.
                             cargarDatosTabla(modeloTabla); // Carga los datos actualizados.
                         } catch (Exception ex) {
-                            JOptionPane.showMessageDialog(null, "Error al eliminar el usuario: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "Error al eliminar el producto: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 });
@@ -205,14 +205,14 @@ public class ScreenGUsuarios extends JFrame {
         });
         
         // Panel con la tabla.
-        JScrollPane scrollTabla = new JScrollPane(tablaUsuarios);
-        scrollTabla.setBorder(BorderFactory.createEmptyBorder(100, 20, 20, 20));
+        JScrollPane scrollTabla = new JScrollPane(tablaProductos);
+        scrollTabla.setBorder(BorderFactory.createEmptyBorder(100, 90, 20, 90));
 
         // Panel inferior con el botón para añadir usuarios.
         JPanel panelInferior = new JPanel(new GridBagLayout());
         panelInferior.setBackground(fondoColor);
 
-        JButton botonAñadir = new JButton("Añadir Usuario");
+        JButton botonAñadir = new JButton("Añadir producto");
         botonAñadir.setFont(fuenteBotones);
         botonAñadir.setBackground(botonColor);
         botonAñadir.setForeground(textoBotonColor);
@@ -242,30 +242,30 @@ public class ScreenGUsuarios extends JFrame {
     // Método para cargar datos en la tabla desde la base de datos.
     private void cargarDatosTabla(DefaultTableModel modeloTabla) {
         try {
-            List<Usuario> usuarios = usuario.listarUsuarios(); // Obtener la lista de usuarios.
-            for (Usuario usuario : usuarios) {
+            List<Producto> productos = producto.listarProductos();
+            for (Producto producto : productos) {
                 modeloTabla.addRow(new Object[]{
-                    String.valueOf(usuario.getIdUsuario()), // Convertir el ID a String.
-                    usuario.getNombreUsuario(),
-                    usuario.getApellido1(),
-                    usuario.getApellido2(),
-                    String.valueOf(usuario.getTelefono()), // Convertir el teléfono a String.
-                    usuario.getEmail(),
-                    usuario.getRol(),
+                    String.valueOf(producto.getIdProducto()), // Convertir el ID a String.
+                    producto.getNombreProducto(),
+                    producto.getDescripcion(),
+                    String.valueOf(producto.getPrecio()),
+                    String.valueOf(producto.getStock()),
+                    String.valueOf(producto.getStockMinimo()),
+                    String.valueOf(producto.getIdCategoria()),
                     "Editar",
                     "Eliminar"
                 });
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar los usuarios: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al cargar los productos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    // Método para abrir el formulario de edición de un usuario.
-    private void abrirFormularioEdicion(int idUsuario) {
+    // Método para abrir el formulario de edición de un producto.
+    private void abrirFormularioEdicion(int idProducto) {
         try {
-            Usuario usuarioEditar = usuario.recuperarUsu(idUsuario); // Recuperar datos del usuario.
-            JFrame formularioEdicion = new JFrame("Editar Usuario");
+            Producto productoEditar = producto.recuperarPro(idProducto); // Recuperar datos del usuario.
+            JFrame formularioEdicion = new JFrame("Editar Producto");
             formularioEdicion.setSize(400, 600);
             formularioEdicion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             formularioEdicion.setLocationRelativeTo(null);
@@ -285,88 +285,89 @@ public class ScreenGUsuarios extends JFrame {
             
             Dimension campoTamanio = new Dimension(200, 25); // Tamaño para los campos de texto del formulario.
 
-            JTextField nombreField = new JTextField(usuarioEditar.getNombreUsuario());
+            JTextField nombreField = new JTextField(productoEditar.getNombreProducto());
             nombreField.setPreferredSize(campoTamanio);
             gbc.gridx = 1;
             gbc.gridy = 0;
             panelFormulario.add(nombreField, gbc);
 
-            JLabel apellido1Label = new JLabel("Apellido 1:"); 
+            JLabel descripcionLabel = new JLabel("Descripción:"); 
             gbc.gridx = 0;
             gbc.gridy = 1;
-            panelFormulario.add(apellido1Label, gbc);
+            panelFormulario.add(descripcionLabel, gbc);
 
-            JTextField apellido1Field = new JTextField(usuarioEditar.getApellido1());
-            apellido1Field.setPreferredSize(campoTamanio);
+            JTextField descripcionField = new JTextField(productoEditar.getDescripcion());
+            descripcionField.setPreferredSize(campoTamanio);
             gbc.gridx = 1;
             gbc.gridy = 1;
-            panelFormulario.add(apellido1Field, gbc);
+            panelFormulario.add(descripcionField, gbc);
 
-            JLabel apellido2Label = new JLabel("Apellido 2:");
+            JLabel precioLabel = new JLabel("Precio:");
             gbc.gridx = 0;
             gbc.gridy = 2;
-            panelFormulario.add(apellido2Label, gbc);
+            panelFormulario.add(precioLabel, gbc);
 
-            JTextField apellido2Field = new JTextField(usuarioEditar.getApellido2());
-            apellido2Field.setPreferredSize(campoTamanio);
+            JTextField precioField = new JTextField(String.valueOf(productoEditar.getPrecio()));
+            precioField.setPreferredSize(campoTamanio);
             gbc.gridx = 1;
             gbc.gridy = 2;
-            panelFormulario.add(apellido2Field, gbc);
+            panelFormulario.add(precioField, gbc);
 
-            JLabel telefonoLabel = new JLabel("Teléfono:");
+            JLabel stockLabel = new JLabel("Stock:");
             gbc.gridx = 0;
             gbc.gridy = 3;
-            panelFormulario.add(telefonoLabel, gbc);
+            panelFormulario.add(stockLabel, gbc);
 
-            JTextField telefonoField = new JTextField(String.valueOf(usuarioEditar.getTelefono()));
-            telefonoField.setPreferredSize(campoTamanio);
+            JTextField stockField = new JTextField(String.valueOf(productoEditar.getStock()));
+            stockField.setPreferredSize(campoTamanio);
             gbc.gridx = 1;
             gbc.gridy = 3;
-            panelFormulario.add(telefonoField, gbc);
+            panelFormulario.add(stockField, gbc);
 
-            JLabel emailLabel = new JLabel("Email:");
+            JLabel stockMinLabel = new JLabel("Stock mínimo:");
             gbc.gridx = 0;
             gbc.gridy = 4;
-            panelFormulario.add(emailLabel, gbc);
+            panelFormulario.add(stockMinLabel, gbc);
 
-            JTextField emailField = new JTextField(usuarioEditar.getEmail());
-            emailField.setPreferredSize(campoTamanio);
+            JTextField stockMinField = new JTextField(String.valueOf(productoEditar.getStockMinimo()));
+            stockMinField.setPreferredSize(campoTamanio);
             gbc.gridx = 1;
             gbc.gridy = 4;
-            panelFormulario.add(emailField, gbc);
+            panelFormulario.add(stockMinField, gbc);
 
-            JLabel rolLabel = new JLabel("Rol:");
+            JLabel idCategoriaLabel = new JLabel("ID Cat:");
             gbc.gridx = 0;
             gbc.gridy = 5;
-            panelFormulario.add(rolLabel, gbc);
+            panelFormulario.add(idCategoriaLabel, gbc);
 
-            JTextField rolField = new JTextField(usuarioEditar.getRol());
-            rolField.setPreferredSize(campoTamanio);
+            JTextField idCategoriaField = new JTextField(String.valueOf(productoEditar.getIdCategoria()));
+            idCategoriaField.setPreferredSize(campoTamanio);
             gbc.gridx = 1;
             gbc.gridy = 5;
-            panelFormulario.add(rolField, gbc);
+            panelFormulario.add(idCategoriaField, gbc);
 
             JButton aplicarCambios = new JButton("Aplicar Cambios");
             aplicarCambios.addActionListener(e -> {
                 try {
-                    usuarioEditar.setNombreUsuario(nombreField.getText());
-                    usuarioEditar.setApellido1(apellido1Field.getText());
-                    usuarioEditar.setApellido2(apellido2Field.getText());
-                    usuarioEditar.setTelefono(Integer.parseInt(telefonoField.getText()));
-                    usuarioEditar.setEmail(emailField.getText());
-                    usuarioEditar.setRol(rolField.getText());
+                	productoEditar.setNombreProducto(nombreField.getText());
+                	productoEditar.setDescripcion(descripcionField.getText());
+                	productoEditar.setPrecio(Double.parseDouble(precioField.getText()));
+                	productoEditar.setStock(Integer.parseInt(stockField.getText()));
+                	productoEditar.setStockMinimo(Integer.parseInt(stockMinField.getText()));
+                	productoEditar.setIdCategoria(Integer.parseInt(idCategoriaField.getText()));
 
-                    usuarioEditar.actualizarUsuario(); // Llama al método para actualizar el usuario en la base de datos.
-                    JOptionPane.showMessageDialog(formularioEdicion, "Usuario actualizado correctamente.");
+
+                	productoEditar.actualizarProducto(); // Llama al método para actualizar el producto en la base de datos.
+                    JOptionPane.showMessageDialog(formularioEdicion, "Producto actualizado correctamente.");
                     formularioEdicion.dispose();
 
                     // Recargar la tabla con los datos actualizados.
-                    DefaultTableModel modeloTabla = (DefaultTableModel) tablaUsuarios.getModel();
+                    DefaultTableModel modeloTabla = (DefaultTableModel) tablaProductos.getModel();
                     modeloTabla.setRowCount(0); // Limpia la tabla.
                     cargarDatosTabla(modeloTabla); // Carga los datos actualizados.
 
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(formularioEdicion, "Error al actualizar el usuario: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(formularioEdicion, "Error al actualizar el producto: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
 
@@ -379,13 +380,13 @@ public class ScreenGUsuarios extends JFrame {
             formularioEdicion.setVisible(true);
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar los datos del usuario: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al cargar los datos del producto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     
-	 // Método para abrir el formulario de añadir usuario
+	 // Método para abrir el formulario de añadir producto
 	    private void abrirFormularioAñadir() {
-	        JFrame formularioInsertar = new JFrame("Añadir Usuario");
+	        JFrame formularioInsertar = new JFrame("Añadir Producto");
 	        formularioInsertar.setSize(400, 600);
 	        formularioInsertar.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	        formularioInsertar.setLocationRelativeTo(null);
@@ -411,95 +412,84 @@ public class ScreenGUsuarios extends JFrame {
 	        gbc.gridy = 0;
 	        panelFormulario.add(nombreField, gbc);
 	
-	        JLabel apellido1Label = new JLabel("Apellido 1:");
+	        JLabel descripcionLabel = new JLabel("Descripción:");
 	        gbc.gridx = 0;
 	        gbc.gridy = 1;
-	        panelFormulario.add(apellido1Label, gbc);
+	        panelFormulario.add(descripcionLabel, gbc);
 	
-	        JTextField apellido1Field = new JTextField();
-	        apellido1Field.setPreferredSize(campoTamanio);
+	        JTextField descripcionField = new JTextField();
+	        descripcionField.setPreferredSize(campoTamanio);
 	        gbc.gridx = 1;
 	        gbc.gridy = 1;
-	        panelFormulario.add(apellido1Field, gbc);
+	        panelFormulario.add(descripcionField, gbc);
 	
-	        JLabel apellido2Label = new JLabel("Apellido 2:");
+	        JLabel precioLabel = new JLabel("Precio:");
 	        gbc.gridx = 0;
 	        gbc.gridy = 2;
-	        panelFormulario.add(apellido2Label, gbc);
+	        panelFormulario.add(precioLabel, gbc);
 	
-	        JTextField apellido2Field = new JTextField();
-	        apellido2Field.setPreferredSize(campoTamanio);
+	        JTextField precioField = new JTextField();
+	        precioField.setPreferredSize(campoTamanio);
 	        gbc.gridx = 1;
 	        gbc.gridy = 2;
-	        panelFormulario.add(apellido2Field, gbc);
+	        panelFormulario.add(precioField, gbc);
 	
-	        JLabel telefonoLabel = new JLabel("Teléfono:");
+	        JLabel stockLabel = new JLabel("Stock:");
 	        gbc.gridx = 0;
 	        gbc.gridy = 3;
-	        panelFormulario.add(telefonoLabel, gbc);
+	        panelFormulario.add(stockLabel, gbc);
 	
-	        JTextField telefonoField = new JTextField();
-	        telefonoField.setPreferredSize(campoTamanio);
+	        JTextField stockField = new JTextField();
+	        stockField.setPreferredSize(campoTamanio);
 	        gbc.gridx = 1;
 	        gbc.gridy = 3;
-	        panelFormulario.add(telefonoField, gbc);
+	        panelFormulario.add(stockField, gbc);
 	
-	        JLabel emailLabel = new JLabel("Email:");
+	        JLabel stockMinLabel = new JLabel("Stock mínimo:");
 	        gbc.gridx = 0;
 	        gbc.gridy = 4;
-	        panelFormulario.add(emailLabel, gbc);
+	        panelFormulario.add(stockMinLabel, gbc);
 	
-	        JTextField emailField = new JTextField();
-	        emailField.setPreferredSize(campoTamanio);
+	        JTextField stockMinField = new JTextField();
+	        stockMinField.setPreferredSize(campoTamanio);
 	        gbc.gridx = 1;
 	        gbc.gridy = 4;
-	        panelFormulario.add(emailField, gbc);
+	        panelFormulario.add(stockMinField, gbc);
 	
-	        JLabel contrasenaLabel = new JLabel("Contraseña:");
+	        JLabel idCategoriaLabel = new JLabel("id Cat:");
 	        gbc.gridx = 0;
 	        gbc.gridy = 5;
-	        panelFormulario.add(contrasenaLabel, gbc);
+	        panelFormulario.add(idCategoriaLabel, gbc);
 	
-	        JTextField contrasenaField = new JTextField();
-	        contrasenaField.setPreferredSize(campoTamanio);
+	        JTextField idCategoriaField = new JTextField();
+	        idCategoriaField.setPreferredSize(campoTamanio);
 	        gbc.gridx = 1;
 	        gbc.gridy = 5;
-	        panelFormulario.add(contrasenaField, gbc);
-	
-	        JLabel rolLabel = new JLabel("Rol:");
-	        gbc.gridx = 0;
-	        gbc.gridy = 6;
-	        panelFormulario.add(rolLabel, gbc);
-	
-	        JTextField rolField = new JTextField();
-	        rolField.setPreferredSize(campoTamanio);
-	        gbc.gridx = 1;
-	        gbc.gridy = 6;
-	        panelFormulario.add(rolField, gbc);
+	        panelFormulario.add(idCategoriaField, gbc);
 	
 	        // Botón para aplicar los cambios
 	        JButton aplicarCambios = new JButton("Enviar formulario");
 	        aplicarCambios.addActionListener(e -> {
 	            try {
-	                Usuario nuevoUsuario = new Usuario();
-	                nuevoUsuario.setNombreUsuario(nombreField.getText());
-	                nuevoUsuario.setApellido1(apellido1Field.getText());
-	                nuevoUsuario.setApellido2(apellido2Field.getText());
-	                nuevoUsuario.setTelefono(Integer.parseInt(telefonoField.getText()));
-	                nuevoUsuario.setEmail(emailField.getText());
-	                nuevoUsuario.setContrasena(contrasenaField.getText());
-	                nuevoUsuario.setRol(rolField.getText());
+	                Producto nuevoProducto = new Producto();
+	                
+	                nuevoProducto.setNombreProducto(nombreField.getText());
+	                nuevoProducto.setDescripcion(descripcionField.getText());
+	                nuevoProducto.setPrecio(Double.parseDouble(precioField.getText()));
+	                nuevoProducto.setStock(Integer.parseInt(stockField.getText()));
+	                nuevoProducto.setStockMinimo(Integer.parseInt(stockMinField.getText()));
+	                nuevoProducto.setIdCategoria(Integer.parseInt(idCategoriaField.getText()));
 	
-	                nuevoUsuario.crearUsuario(); // Llama al método para crear el usuario en la base de datos.
-	                JOptionPane.showMessageDialog(formularioInsertar, "Usuario creado correctamente.");
+	                nuevoProducto.crearProducto(); // Llama al método para crear el producto en la base de datos.
+	                JOptionPane.showMessageDialog(formularioInsertar, "Producto creado correctamente.");
 	                formularioInsertar.dispose();
 	
 	                // Recargar la tabla con los datos actualizados.
-	                DefaultTableModel modeloTabla = (DefaultTableModel) tablaUsuarios.getModel();
+	                DefaultTableModel modeloTabla = (DefaultTableModel) tablaProductos.getModel();
 	                modeloTabla.setRowCount(0); // Limpia la tabla.
 	                cargarDatosTabla(modeloTabla); // Carga los datos actualizados.
 	            } catch (Exception ex) {
-	                JOptionPane.showMessageDialog(formularioInsertar, "Error al crear el usuario: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	                JOptionPane.showMessageDialog(formularioInsertar, "Error al crear el producto: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 	            }
 	        });
 	
@@ -515,8 +505,8 @@ public class ScreenGUsuarios extends JFrame {
 	   
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            Usuario usuario = new Usuario(); // Instancia de Usuario que gestiona la lógica.
-            new ScreenGUsuarios(usuario).setVisible(true);
+            Producto producto = new Producto(); // Instancia de Usuario que gestiona la lógica.
+            new ScreenGProductos(producto).setVisible(true);
         });
         
     }

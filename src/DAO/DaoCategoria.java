@@ -77,7 +77,7 @@ public class DaoCategoria {
 				result = new ArrayList<Categoria>();
 			}
 			
-			result.add(new Categoria(rs.getString(1), rs.getString(2)));
+			result.add(new Categoria(rs.getInt(1), rs.getString(2), rs.getString(3)));
 			
 		}
 		
@@ -93,7 +93,7 @@ public class DaoCategoria {
 	 * @return Objeto Categoria con los datos de la categoria leidos.
 	 * @throws SQLException Si hay un error de lectura
 	 */
-	public Categoria leerFormulario(int idCategoria) throws SQLException {
+	public Categoria leerCategoria(int idCategoria) throws SQLException {
 		
 		String sql = "SELECT * FROM categorias WHERE id_Categoria = ?";
 		
@@ -115,7 +115,7 @@ public class DaoCategoria {
 		
 		try {
 			
-		String sql = "UPDATE categorias SET nombre_Categoria = ?, descripcion = ?, id_Categoria = ?";
+		String sql = "UPDATE categorias SET nombre_Categoria = ?, descripcion = ? WHERE id_Categoria = ?";
 		
 		PreparedStatement ps = con.prepareStatement(sql);
 		
@@ -138,13 +138,13 @@ public class DaoCategoria {
 		} // Cierre del catch
 	}
 	
-	public static void borrarCategoria(Categoria cate) throws SQLException {
+	public static void borrarCategoria(int idCategoria) throws SQLException {
 		
 		String sql = "DELETE FROM categorias WHERE id_Categoria = ?";
 		
 		PreparedStatement ps = con.prepareStatement(sql);
 		
-		ps.setInt(1, cate.getIdCategoria());
+		ps.setInt(1, idCategoria);
 		
 		@SuppressWarnings("unused")
 		int filas = ps.executeUpdate();
