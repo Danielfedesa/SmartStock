@@ -41,11 +41,12 @@ public class DaoCopiaSeguridad {
      */
 	public void registrarBackup(String rutaBackup) throws SQLException {
 		
-		String sql = "INSERT INTO copiasseguridad (ruta_Archivo) VALUES (?)";
+		String sql = "INSERT INTO copiasseguridad (fecha_Backup, ruta_Archivo) VALUES (?)";
 		
 		PreparedStatement ps = con.prepareStatement(sql);
 		
 		ps.setString(1, rutaBackup);
+		ps.setString(2, rutaBackup);
 		
 		@SuppressWarnings("unused")
 		int filas = ps.executeUpdate();

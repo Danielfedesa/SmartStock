@@ -61,7 +61,7 @@ public class ScreenDashboardAdmin extends JFrame {
 		tituloLabel.setFont(fuenteTitulo);
 		tituloLabel.setBackground(Color.DARK_GRAY);
 		
-		JButton gUsuarios = new JButton("Gestión de usuarios");
+		JButton gUsuarios = new JButton("Gestión de Usuarios");
 		configBoton(gUsuarios, botonColor, textoBotonColor, fuenteBotones);
 		
 		JButton gCategorias = new JButton("Gestión de Categorías");

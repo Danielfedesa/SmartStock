@@ -27,9 +27,13 @@ public class ScreenGProductos extends JFrame {
     private static final long serialVersionUID = 1L;
     private Producto producto; // Controlador que maneja la lógica relacionada con productos.
     private JTable tablaProductos; // Tabla para mostrar la lista de productos.
+    private ScreenFormularios screenFormularios; // Declarar ScreenFormularios
 
     public ScreenGProductos(Producto producto) {
         this.producto = producto;
+        
+        // Inicializar ScreenFormularios
+        this.screenFormularios = new ScreenFormularios();
 
         // Configuración básica de la ventana.
         setTitle("SmartStock - Gestión de Productos");
@@ -144,16 +148,35 @@ public class ScreenGProductos extends JFrame {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-            public java.awt.Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-                JButton botonEditar = new JButton("Editar");
-                botonEditar.setBackground(botonColor);
-                botonEditar.setForeground(textoBotonColor);
-                botonEditar.addActionListener(e -> {
-                    int idProducto = Integer.parseInt(table.getValueAt(row, 0).toString());
-                    abrirFormularioEdicion(idProducto); // Abrir formulario de edición con el ID seleccionado.
-                });
-                return botonEditar;
-            }
+			public java.awt.Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+			    JButton botonEditar = new JButton("Editar"); // Crear el botón "Editar".
+			    botonEditar.setBackground(botonColor); // Configuración de estilo para el botón.
+			    botonEditar.setForeground(textoBotonColor);
+
+			    botonEditar.addActionListener(e -> {
+			        try {
+			            int idProducto = Integer.parseInt(table.getValueAt(row, 0).toString()); // Recuperar el ID del producto.
+
+			            // Recuperar el producto antes de llamar al formulario.
+			            Producto productoEditar = producto.recuperarPro(idProducto);
+
+			            // Crear instancia de ScreenFormularios.
+			            ScreenFormularios screenFormularios = new ScreenFormularios();
+
+			            // Llamar al método abrirFormularioEdicion pasando el Producto.
+			            screenFormularios.abrirFormularioEdicionProd(productoEditar, () -> {
+			                // Acción adicional: recargar la tabla principal después de cerrar el formulario.
+			                DefaultTableModel modeloTabla = (DefaultTableModel) table.getModel();
+			                modeloTabla.setRowCount(0); // Limpiar la tabla.
+			                cargarDatosTabla(modeloTabla); // Volver a cargar los datos.
+			            });
+			        } catch (Exception ex) {
+			            JOptionPane.showMessageDialog(null, "Error al recuperar el producto: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			        }
+			    });
+
+			    return botonEditar; // Devolver el botón como componente del editor.
+			}
         });
 
      // Renderizador y editor para el botón "Eliminar".
@@ -222,8 +245,13 @@ public class ScreenGProductos extends JFrame {
             BorderFactory.createEmptyBorder(5, 15, 5, 15)
         ));
 
+     // Instanciar ScreenFormularios y llamar al método abrirFormularioAddUsu      
         botonAñadir.addActionListener(e -> {
-            abrirFormularioAñadir(); // Llama al formulario de añadir usuario.
+            screenFormularios.abrirFormularioAddProd(() -> {
+                DefaultTableModel modeloTablaActual = (DefaultTableModel) tablaProductos.getModel();
+                modeloTablaActual.setRowCount(0); // Limpia las filas existentes
+                cargarDatosTabla(modeloTablaActual); // Carga los datos actualizados
+            });
         });
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -261,248 +289,6 @@ public class ScreenGProductos extends JFrame {
         }
     }
 
-    // Método para abrir el formulario de edición de un producto.
-    private void abrirFormularioEdicion(int idProducto) {
-        try {
-            Producto productoEditar = producto.recuperarPro(idProducto); // Recuperar datos del usuario.
-            JFrame formularioEdicion = new JFrame("Editar Producto");
-            formularioEdicion.setSize(400, 600);
-            formularioEdicion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            formularioEdicion.setLocationRelativeTo(null);
-
-            JPanel panelFormulario = new JPanel(new GridBagLayout());
-            panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.insets = new Insets(10, 10, 10, 10);
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-
-            // Campos del formulario para editar los datos.
-            JLabel nombreLabel = new JLabel("Nombre:");
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            panelFormulario.add(nombreLabel, gbc);
-            
-            Dimension campoTamanio = new Dimension(200, 25); // Tamaño para los campos de texto del formulario.
-
-            JTextField nombreField = new JTextField(productoEditar.getNombreProducto());
-            nombreField.setPreferredSize(campoTamanio);
-            gbc.gridx = 1;
-            gbc.gridy = 0;
-            panelFormulario.add(nombreField, gbc);
-
-            JLabel descripcionLabel = new JLabel("Descripción:"); 
-            gbc.gridx = 0;
-            gbc.gridy = 1;
-            panelFormulario.add(descripcionLabel, gbc);
-
-            JTextField descripcionField = new JTextField(productoEditar.getDescripcion());
-            descripcionField.setPreferredSize(campoTamanio);
-            gbc.gridx = 1;
-            gbc.gridy = 1;
-            panelFormulario.add(descripcionField, gbc);
-
-            JLabel precioLabel = new JLabel("Precio:");
-            gbc.gridx = 0;
-            gbc.gridy = 2;
-            panelFormulario.add(precioLabel, gbc);
-
-            JTextField precioField = new JTextField(String.valueOf(productoEditar.getPrecio()));
-            precioField.setPreferredSize(campoTamanio);
-            gbc.gridx = 1;
-            gbc.gridy = 2;
-            panelFormulario.add(precioField, gbc);
-
-            JLabel stockLabel = new JLabel("Stock:");
-            gbc.gridx = 0;
-            gbc.gridy = 3;
-            panelFormulario.add(stockLabel, gbc);
-
-            JTextField stockField = new JTextField(String.valueOf(productoEditar.getStock()));
-            stockField.setPreferredSize(campoTamanio);
-            gbc.gridx = 1;
-            gbc.gridy = 3;
-            panelFormulario.add(stockField, gbc);
-
-            JLabel stockMinLabel = new JLabel("Stock mínimo:");
-            gbc.gridx = 0;
-            gbc.gridy = 4;
-            panelFormulario.add(stockMinLabel, gbc);
-
-            JTextField stockMinField = new JTextField(String.valueOf(productoEditar.getStockMinimo()));
-            stockMinField.setPreferredSize(campoTamanio);
-            gbc.gridx = 1;
-            gbc.gridy = 4;
-            panelFormulario.add(stockMinField, gbc);
-
-            JLabel idCategoriaLabel = new JLabel("ID Cat:");
-            gbc.gridx = 0;
-            gbc.gridy = 5;
-            panelFormulario.add(idCategoriaLabel, gbc);
-
-            JTextField idCategoriaField = new JTextField(String.valueOf(productoEditar.getIdCategoria()));
-            idCategoriaField.setPreferredSize(campoTamanio);
-            gbc.gridx = 1;
-            gbc.gridy = 5;
-            panelFormulario.add(idCategoriaField, gbc);
-
-            JButton aplicarCambios = new JButton("Aplicar Cambios");
-            aplicarCambios.addActionListener(e -> {
-                try {
-                	productoEditar.setNombreProducto(nombreField.getText());
-                	productoEditar.setDescripcion(descripcionField.getText());
-                	productoEditar.setPrecio(Double.parseDouble(precioField.getText()));
-                	productoEditar.setStock(Integer.parseInt(stockField.getText()));
-                	productoEditar.setStockMinimo(Integer.parseInt(stockMinField.getText()));
-                	productoEditar.setIdCategoria(Integer.parseInt(idCategoriaField.getText()));
-
-
-                	productoEditar.actualizarProducto(); // Llama al método para actualizar el producto en la base de datos.
-                    JOptionPane.showMessageDialog(formularioEdicion, "Producto actualizado correctamente.");
-                    formularioEdicion.dispose();
-
-                    // Recargar la tabla con los datos actualizados.
-                    DefaultTableModel modeloTabla = (DefaultTableModel) tablaProductos.getModel();
-                    modeloTabla.setRowCount(0); // Limpia la tabla.
-                    cargarDatosTabla(modeloTabla); // Carga los datos actualizados.
-
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(formularioEdicion, "Error al actualizar el producto: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            });
-
-            gbc.gridx = 0;
-            gbc.gridy = 6;
-            gbc.gridwidth = 2;
-            panelFormulario.add(aplicarCambios, gbc);
-
-            formularioEdicion.add(panelFormulario);
-            formularioEdicion.setVisible(true);
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar los datos del producto: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    
-	 // Método para abrir el formulario de añadir producto
-	    private void abrirFormularioAñadir() {
-	        JFrame formularioInsertar = new JFrame("Añadir Producto");
-	        formularioInsertar.setSize(400, 600);
-	        formularioInsertar.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	        formularioInsertar.setLocationRelativeTo(null);
-	
-	        JPanel panelFormulario = new JPanel(new GridBagLayout());
-	        panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-	
-	        GridBagConstraints gbc = new GridBagConstraints();
-	        gbc.insets = new Insets(10, 10, 10, 10);
-	        gbc.fill = GridBagConstraints.HORIZONTAL;
-	        
-	        Dimension campoTamanio = new Dimension(200, 25); // Tamaño para los campos de texto del formulario.
-	
-	        // Campos del formulario
-	        JLabel nombreLabel = new JLabel("Nombre:");
-	        gbc.gridx = 0;
-	        gbc.gridy = 0;
-	        panelFormulario.add(nombreLabel, gbc);
-	
-	        JTextField nombreField = new JTextField();
-	        nombreField.setPreferredSize(campoTamanio);
-	        gbc.gridx = 1;
-	        gbc.gridy = 0;
-	        panelFormulario.add(nombreField, gbc);
-	
-	        JLabel descripcionLabel = new JLabel("Descripción:");
-	        gbc.gridx = 0;
-	        gbc.gridy = 1;
-	        panelFormulario.add(descripcionLabel, gbc);
-	
-	        JTextField descripcionField = new JTextField();
-	        descripcionField.setPreferredSize(campoTamanio);
-	        gbc.gridx = 1;
-	        gbc.gridy = 1;
-	        panelFormulario.add(descripcionField, gbc);
-	
-	        JLabel precioLabel = new JLabel("Precio:");
-	        gbc.gridx = 0;
-	        gbc.gridy = 2;
-	        panelFormulario.add(precioLabel, gbc);
-	
-	        JTextField precioField = new JTextField();
-	        precioField.setPreferredSize(campoTamanio);
-	        gbc.gridx = 1;
-	        gbc.gridy = 2;
-	        panelFormulario.add(precioField, gbc);
-	
-	        JLabel stockLabel = new JLabel("Stock:");
-	        gbc.gridx = 0;
-	        gbc.gridy = 3;
-	        panelFormulario.add(stockLabel, gbc);
-	
-	        JTextField stockField = new JTextField();
-	        stockField.setPreferredSize(campoTamanio);
-	        gbc.gridx = 1;
-	        gbc.gridy = 3;
-	        panelFormulario.add(stockField, gbc);
-	
-	        JLabel stockMinLabel = new JLabel("Stock mínimo:");
-	        gbc.gridx = 0;
-	        gbc.gridy = 4;
-	        panelFormulario.add(stockMinLabel, gbc);
-	
-	        JTextField stockMinField = new JTextField();
-	        stockMinField.setPreferredSize(campoTamanio);
-	        gbc.gridx = 1;
-	        gbc.gridy = 4;
-	        panelFormulario.add(stockMinField, gbc);
-	
-	        JLabel idCategoriaLabel = new JLabel("id Cat:");
-	        gbc.gridx = 0;
-	        gbc.gridy = 5;
-	        panelFormulario.add(idCategoriaLabel, gbc);
-	
-	        JTextField idCategoriaField = new JTextField();
-	        idCategoriaField.setPreferredSize(campoTamanio);
-	        gbc.gridx = 1;
-	        gbc.gridy = 5;
-	        panelFormulario.add(idCategoriaField, gbc);
-	
-	        // Botón para aplicar los cambios
-	        JButton aplicarCambios = new JButton("Enviar formulario");
-	        aplicarCambios.addActionListener(e -> {
-	            try {
-	                Producto nuevoProducto = new Producto();
-	                
-	                nuevoProducto.setNombreProducto(nombreField.getText());
-	                nuevoProducto.setDescripcion(descripcionField.getText());
-	                nuevoProducto.setPrecio(Double.parseDouble(precioField.getText()));
-	                nuevoProducto.setStock(Integer.parseInt(stockField.getText()));
-	                nuevoProducto.setStockMinimo(Integer.parseInt(stockMinField.getText()));
-	                nuevoProducto.setIdCategoria(Integer.parseInt(idCategoriaField.getText()));
-	
-	                nuevoProducto.crearProducto(); // Llama al método para crear el producto en la base de datos.
-	                JOptionPane.showMessageDialog(formularioInsertar, "Producto creado correctamente.");
-	                formularioInsertar.dispose();
-	
-	                // Recargar la tabla con los datos actualizados.
-	                DefaultTableModel modeloTabla = (DefaultTableModel) tablaProductos.getModel();
-	                modeloTabla.setRowCount(0); // Limpia la tabla.
-	                cargarDatosTabla(modeloTabla); // Carga los datos actualizados.
-	            } catch (Exception ex) {
-	                JOptionPane.showMessageDialog(formularioInsertar, "Error al crear el producto: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-	            }
-	        });
-	
-	        gbc.gridx = 0;
-	        gbc.gridy = 7;
-	        gbc.gridwidth = 2;
-	        panelFormulario.add(aplicarCambios, gbc);
-	
-	        formularioInsertar.add(panelFormulario);
-	        formularioInsertar.setVisible(true);
-	    }
-
-	   
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Producto producto = new Producto(); // Instancia de Usuario que gestiona la lógica.

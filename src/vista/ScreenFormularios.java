@@ -1,0 +1,683 @@
+package vista;
+
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import modelo.Categoria;
+import modelo.Producto;
+import modelo.Usuario;
+
+public class ScreenFormularios {
+	
+	// Formularios editar y añadir PRODUCTOS:
+
+    public void abrirFormularioEdicionProd(Producto productoEditar, Runnable onUpdateCallback) {
+        JFrame formularioEdicion = new JFrame("Editar Producto");
+        formularioEdicion.setSize(400, 600);
+        formularioEdicion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        formularioEdicion.setLocationRelativeTo(null);
+
+        JPanel panelFormulario = new JPanel(new GridBagLayout());
+        panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Configuración de tamaño estándar para los campos.
+        Dimension campoTamanio = new Dimension(200, 25);
+
+        // Campo "Nombre".
+        JLabel nombreLabel = new JLabel("Nombre:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panelFormulario.add(nombreLabel, gbc);
+
+        JTextField nombreField = new JTextField(productoEditar.getNombreProducto());
+        nombreField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        panelFormulario.add(nombreField, gbc);
+
+        // Campo "Descripción".
+        JLabel descripcionLabel = new JLabel("Descripción:");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panelFormulario.add(descripcionLabel, gbc);
+
+        JTextArea descripcionField = new JTextArea(productoEditar.getDescripcion());
+        descripcionField.setLineWrap(true);
+        descripcionField.setWrapStyleWord(true);
+        JScrollPane scrollDescripcion = new JScrollPane(descripcionField);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridheight = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        panelFormulario.add(scrollDescripcion, gbc);
+
+        // Restablecer gridheight y fill.
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Campo "Precio".
+        JLabel precioLabel = new JLabel("Precio:");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panelFormulario.add(precioLabel, gbc);
+
+        JTextField precioField = new JTextField(String.valueOf(productoEditar.getPrecio()));
+        precioField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        panelFormulario.add(precioField, gbc);
+
+        // Campo "Stock".
+        JLabel stockLabel = new JLabel("Stock:");
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        panelFormulario.add(stockLabel, gbc);
+
+        JTextField stockField = new JTextField(String.valueOf(productoEditar.getStock()));
+        stockField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        panelFormulario.add(stockField, gbc);
+
+        // Campo "Stock mínimo".
+        JLabel stockMinLabel = new JLabel("Stock mínimo:");
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        panelFormulario.add(stockMinLabel, gbc);
+
+        JTextField stockMinField = new JTextField(String.valueOf(productoEditar.getStockMinimo()));
+        stockMinField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        panelFormulario.add(stockMinField, gbc);
+
+        // Campo "ID Categoría".
+        JLabel idCategoriaLabel = new JLabel("ID Categoría:");
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        panelFormulario.add(idCategoriaLabel, gbc);
+
+        JTextField idCategoriaField = new JTextField(String.valueOf(productoEditar.getIdCategoria()));
+        idCategoriaField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        panelFormulario.add(idCategoriaField, gbc);
+
+        // Botón "Aplicar Cambios".
+        JButton aplicarCambios = new JButton("Aplicar Cambios");
+        aplicarCambios.addActionListener(e -> {
+            try {
+                productoEditar.setNombreProducto(nombreField.getText());
+                productoEditar.setDescripcion(descripcionField.getText());
+                productoEditar.setPrecio(Double.parseDouble(precioField.getText()));
+                productoEditar.setStock(Integer.parseInt(stockField.getText()));
+                productoEditar.setStockMinimo(Integer.parseInt(stockMinField.getText()));
+                productoEditar.setIdCategoria(Integer.parseInt(idCategoriaField.getText()));
+
+                productoEditar.actualizarProducto(); // Actualizar el producto en la base de datos.
+                JOptionPane.showMessageDialog(formularioEdicion, "Producto actualizado correctamente.");
+                formularioEdicion.dispose();
+
+                // Ejecutar el callback después de actualizar.
+                if (onUpdateCallback != null) {
+                    onUpdateCallback.run();
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(formularioEdicion, "Error al actualizar el producto: " + ex.getMessage(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        panelFormulario.add(aplicarCambios, gbc);
+
+        formularioEdicion.add(panelFormulario);
+        formularioEdicion.setVisible(true);
+    }
+    
+    public void abrirFormularioAddProd(Runnable callback) {
+        JFrame formularioInsertar = new JFrame("Añadir Producto");
+        formularioInsertar.setSize(400, 600);
+        formularioInsertar.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        formularioInsertar.setLocationRelativeTo(null);
+
+        JPanel panelFormulario = new JPanel(new GridBagLayout());
+        panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        Dimension campoTamanio = new Dimension(200, 25); // Tamaño para los campos de texto del formulario.
+
+        // Campos del formulario
+        JLabel nombreLabel = new JLabel("Nombre:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panelFormulario.add(nombreLabel, gbc);
+
+        JTextField nombreField = new JTextField();
+        nombreField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        panelFormulario.add(nombreField, gbc);
+
+        JLabel descripcionLabel = new JLabel("Descripción:");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panelFormulario.add(descripcionLabel, gbc);
+
+        JTextField descripcionField = new JTextField();
+        descripcionField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        panelFormulario.add(descripcionField, gbc);
+
+        JLabel precioLabel = new JLabel("Precio:");
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panelFormulario.add(precioLabel, gbc);
+
+        JTextField precioField = new JTextField();
+        precioField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        panelFormulario.add(precioField, gbc);
+
+        JLabel stockLabel = new JLabel("Stock:");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panelFormulario.add(stockLabel, gbc);
+
+        JTextField stockField = new JTextField();
+        stockField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        panelFormulario.add(stockField, gbc);
+
+        JLabel stockMinLabel = new JLabel("Stock mínimo:");
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        panelFormulario.add(stockMinLabel, gbc);
+
+        JTextField stockMinField = new JTextField();
+        stockMinField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        panelFormulario.add(stockMinField, gbc);
+
+        JLabel idCategoriaLabel = new JLabel("id Cat:");
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        panelFormulario.add(idCategoriaLabel, gbc);
+
+        JTextField idCategoriaField = new JTextField();
+        idCategoriaField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        panelFormulario.add(idCategoriaField, gbc);
+
+        // Botón "Añadir Producto"
+        JButton aplicarCambios = new JButton("Añadir Producto");
+        aplicarCambios.addActionListener(e -> {
+            try {
+                Producto nuevoProducto = new Producto();
+                nuevoProducto.setNombreProducto(nombreField.getText());
+                nuevoProducto.setDescripcion(descripcionField.getText());
+                nuevoProducto.setPrecio(Double.parseDouble(precioField.getText()));
+                nuevoProducto.setStock(Integer.parseInt(stockField.getText()));
+                nuevoProducto.setStockMinimo(Integer.parseInt(stockMinField.getText()));
+                nuevoProducto.setIdCategoria(Integer.parseInt(idCategoriaField.getText()));
+
+                nuevoProducto.crearProducto(); // Llama al método para añadir el producto
+                JOptionPane.showMessageDialog(formularioInsertar, "Producto añadido correctamente.");
+                formularioInsertar.dispose();
+
+                if (callback != null) {
+                    callback.run(); // Ejecuta el callback para recargar la tabla
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(formularioInsertar,
+                        "Error al añadir el producto: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        gbc.gridwidth = 2;
+        panelFormulario.add(aplicarCambios, gbc);
+
+        formularioInsertar.add(panelFormulario);
+        formularioInsertar.setVisible(true);
+    }
+    
+    
+    // Formularios editar y añadir USUARIOS:
+
+    public void abrirFormularioEdicionUsu(Usuario usuarioEditar, Runnable onUpdateCallback) {
+        try {
+            JFrame formularioEdicion = new JFrame("Editar Usuario");
+            formularioEdicion.setSize(400, 600);
+            formularioEdicion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            formularioEdicion.setLocationRelativeTo(null);
+
+            JPanel panelFormulario = new JPanel(new GridBagLayout());
+            panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(10, 10, 10, 10);
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+
+            // Configuración de tamaño estándar para los campos.
+            Dimension campoTamanio = new Dimension(200, 25);
+
+            // Campos del formulario para editar los datos.
+            JLabel nombreLabel = new JLabel("Nombre:");
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            panelFormulario.add(nombreLabel, gbc);
+
+            JTextField nombreField = new JTextField(usuarioEditar.getNombreUsuario());
+            nombreField.setPreferredSize(campoTamanio);
+            gbc.gridx = 1;
+            gbc.gridy = 0;
+            panelFormulario.add(nombreField, gbc);
+
+            JLabel apellido1Label = new JLabel("Apellido 1:");
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            panelFormulario.add(apellido1Label, gbc);
+
+            JTextField apellido1Field = new JTextField(usuarioEditar.getApellido1());
+            apellido1Field.setPreferredSize(campoTamanio);
+            gbc.gridx = 1;
+            gbc.gridy = 1;
+            panelFormulario.add(apellido1Field, gbc);
+
+            JLabel apellido2Label = new JLabel("Apellido 2:");
+            gbc.gridx = 0;
+            gbc.gridy = 2;
+            panelFormulario.add(apellido2Label, gbc);
+
+            JTextField apellido2Field = new JTextField(usuarioEditar.getApellido2());
+            apellido2Field.setPreferredSize(campoTamanio);
+            gbc.gridx = 1;
+            gbc.gridy = 2;
+            panelFormulario.add(apellido2Field, gbc);
+
+            JLabel telefonoLabel = new JLabel("Teléfono:");
+            gbc.gridx = 0;
+            gbc.gridy = 3;
+            panelFormulario.add(telefonoLabel, gbc);
+
+            JTextField telefonoField = new JTextField(String.valueOf(usuarioEditar.getTelefono()));
+            telefonoField.setPreferredSize(campoTamanio);
+            gbc.gridx = 1;
+            gbc.gridy = 3;
+            panelFormulario.add(telefonoField, gbc);
+
+            JLabel emailLabel = new JLabel("Email:");
+            gbc.gridx = 0;
+            gbc.gridy = 4;
+            panelFormulario.add(emailLabel, gbc);
+
+            JTextField emailField = new JTextField(usuarioEditar.getEmail());
+            emailField.setPreferredSize(campoTamanio);
+            gbc.gridx = 1;
+            gbc.gridy = 4;
+            panelFormulario.add(emailField, gbc);
+
+            JLabel rolLabel = new JLabel("Rol:");
+            gbc.gridx = 0;
+            gbc.gridy = 5;
+            panelFormulario.add(rolLabel, gbc);
+
+            JTextField rolField = new JTextField(usuarioEditar.getRol());
+            rolField.setPreferredSize(campoTamanio);
+            gbc.gridx = 1;
+            gbc.gridy = 5;
+            panelFormulario.add(rolField, gbc);
+
+            // Botón "Aplicar Cambios".
+            JButton aplicarCambios = new JButton("Aplicar Cambios");
+            aplicarCambios.addActionListener(e -> {
+                try {
+                    usuarioEditar.setNombreUsuario(nombreField.getText());
+                    usuarioEditar.setApellido1(apellido1Field.getText());
+                    usuarioEditar.setApellido2(apellido2Field.getText());
+                    usuarioEditar.setTelefono(Integer.parseInt(telefonoField.getText()));
+                    usuarioEditar.setEmail(emailField.getText());
+                    usuarioEditar.setRol(rolField.getText());
+
+                    usuarioEditar.actualizarUsuario(); // Actualiza en la base de datos.
+                    JOptionPane.showMessageDialog(formularioEdicion, "Usuario actualizado correctamente.");
+                    formularioEdicion.dispose();
+
+                    // Llamada al callback para actualizar la tabla.
+                    if (onUpdateCallback != null) {
+                        onUpdateCallback.run();
+                    }
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(formularioEdicion, "Error al actualizar el usuario: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+
+            gbc.gridx = 0;
+            gbc.gridy = 6;
+            gbc.gridwidth = 2;
+            panelFormulario.add(aplicarCambios, gbc);
+
+            formularioEdicion.add(panelFormulario);
+            formularioEdicion.setVisible(true);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al cargar los datos del usuario: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+   }
+    
+    public void abrirFormularioAddUsu(Runnable callback) {
+        JFrame formularioInsertar = new JFrame("Añadir Usuario");
+        formularioInsertar.setSize(400, 600);
+        formularioInsertar.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        formularioInsertar.setLocationRelativeTo(null);
+
+        JPanel panelFormulario = new JPanel(new GridBagLayout());
+        panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        Dimension campoTamanio = new Dimension(200, 25); // Tamaño para los campos de texto del formulario.
+
+     // Campos del formulario
+        JLabel nombreLabel = new JLabel("Nombre:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panelFormulario.add(nombreLabel, gbc);
+
+        JTextField nombreField = new JTextField();
+        nombreField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        panelFormulario.add(nombreField, gbc);
+
+        JLabel apellido1Label = new JLabel("Apellido 1:");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panelFormulario.add(apellido1Label, gbc);
+
+        JTextField apellido1Field = new JTextField();
+        apellido1Field.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        panelFormulario.add(apellido1Field, gbc);
+
+        JLabel apellido2Label = new JLabel("Apellido 2:");
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panelFormulario.add(apellido2Label, gbc);
+
+        JTextField apellido2Field = new JTextField();
+        apellido2Field.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        panelFormulario.add(apellido2Field, gbc);
+
+        JLabel telefonoLabel = new JLabel("Teléfono:");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panelFormulario.add(telefonoLabel, gbc);
+
+        JTextField telefonoField = new JTextField();
+        telefonoField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        panelFormulario.add(telefonoField, gbc);
+
+        JLabel emailLabel = new JLabel("Email:");
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        panelFormulario.add(emailLabel, gbc);
+
+        JTextField emailField = new JTextField();
+        emailField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        panelFormulario.add(emailField, gbc);
+
+        JLabel contrasenaLabel = new JLabel("Contraseña:");
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        panelFormulario.add(contrasenaLabel, gbc);
+
+        JTextField contrasenaField = new JTextField();
+        contrasenaField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        panelFormulario.add(contrasenaField, gbc);
+
+        JLabel rolLabel = new JLabel("Rol:");
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        panelFormulario.add(rolLabel, gbc);
+
+        JTextField rolField = new JTextField();
+        rolField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        panelFormulario.add(rolField, gbc);
+
+        // Botón aplicar cambios
+        JButton aplicarCambios = new JButton("Añadir usuario");
+        aplicarCambios.addActionListener(e -> {
+            try {
+                Usuario nuevoUsuario = new Usuario();
+                nuevoUsuario.setNombreUsuario(nombreField.getText());
+                nuevoUsuario.setApellido1(apellido1Field.getText());
+                nuevoUsuario.setApellido2(apellido2Field.getText());
+                nuevoUsuario.setTelefono(Integer.parseInt(telefonoField.getText()));
+                nuevoUsuario.setEmail(emailField.getText());
+                nuevoUsuario.setContrasena(contrasenaField.getText());
+                nuevoUsuario.setRol(rolField.getText());
+
+                nuevoUsuario.crearUsuario(); // Llama al método para crear el usuario en la base de datos.
+                JOptionPane.showMessageDialog(formularioInsertar, "Usuario creado correctamente.");
+                formularioInsertar.dispose();
+
+                if (callback != null) {
+                    callback.run(); // Ejecuta el callback para recargar la tabla
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(formularioInsertar,
+                        "Error al añadir el usuario: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        gbc.gridwidth = 2;
+        panelFormulario.add(aplicarCambios, gbc);
+
+        formularioInsertar.add(panelFormulario);
+        formularioInsertar.setVisible(true);
+    }
+    
+ // Formularios editar y añadir CATEGORIAS:
+
+    public void abrirFormularioEdicionCat(Categoria categoriaEditar, Runnable onUpdateCallback) {
+        try {
+            JFrame formularioEdicion = new JFrame("Editar Categoría");
+            formularioEdicion.setSize(400, 600);
+            formularioEdicion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            formularioEdicion.setLocationRelativeTo(null);
+
+            JPanel panelFormulario = new JPanel(new GridBagLayout());
+            panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(10, 10, 10, 10);
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+
+            // Configuración de tamaño estándar para los campos.
+            Dimension campoTamanio = new Dimension(200, 25);
+
+         // Campos del formulario para editar los datos.
+            JLabel nombreLabel = new JLabel("Nombre:");
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            panelFormulario.add(nombreLabel, gbc);
+            
+            
+            JTextField nombreField = new JTextField(categoriaEditar.getNombreCategoria());
+            nombreField.setPreferredSize(campoTamanio);
+            gbc.gridx = 1;
+            gbc.gridy = 0;
+            panelFormulario.add(nombreField, gbc);
+            
+            JLabel descripcionLabel = new JLabel("Descripción:");
+            gbc.gridx = 0; // Columna 0
+            gbc.gridy = 1; // Fila 1
+            gbc.gridheight = 1; // Ocupa solo una fila
+            panelFormulario.add(descripcionLabel, gbc);
+
+            JTextArea descripcionField = new JTextArea(categoriaEditar.getDescripcion()); // Cambiamos a JTextArea para soportar múltiples líneas
+            descripcionField.setLineWrap(true); // Envolver texto automáticamente
+            descripcionField.setWrapStyleWord(true); // Envolver por palabras completas
+            gbc.gridx = 1; // Columna 1
+            gbc.gridy = 1; // Fila 1
+            gbc.gridheight = 3; // Ocupa 2 filas
+            gbc.fill = GridBagConstraints.BOTH; // Expandir tanto en ancho como en alto
+            panelFormulario.add(new JScrollPane(descripcionField), gbc);
+
+            // Botón "Aplicar Cambios".
+            JButton aplicarCambios = new JButton("Aplicar Cambios");
+            aplicarCambios.addActionListener(e -> {
+                try {
+                	categoriaEditar.setNombreCategoria(nombreField.getText());
+                	categoriaEditar.setDescripcion(descripcionField.getText());
+
+                    categoriaEditar.actualizarCategoria(); // Actualiza en la base de datos.
+                    JOptionPane.showMessageDialog(formularioEdicion, "Usuario actualizado correctamente.");
+                    formularioEdicion.dispose();
+
+                    // Llamada al callback para actualizar la tabla.
+                    if (onUpdateCallback != null) {
+                        onUpdateCallback.run();
+                    }
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(formularioEdicion, "Error al actualizar el usuario: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+
+            gbc.gridx = 0;
+            gbc.gridy = 6;
+            gbc.gridwidth = 2;
+            panelFormulario.add(aplicarCambios, gbc);
+
+            formularioEdicion.add(panelFormulario);
+            formularioEdicion.setVisible(true);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al cargar los datos del usuario: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+   }
+    
+    public void abrirFormularioAddCat(Runnable callback) {
+        JFrame formularioInsertar = new JFrame("Añadir Usuario");
+        formularioInsertar.setSize(400, 600);
+        formularioInsertar.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        formularioInsertar.setLocationRelativeTo(null);
+
+        JPanel panelFormulario = new JPanel(new GridBagLayout());
+        panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        Dimension campoTamanio = new Dimension(200, 25); // Tamaño para los campos de texto del formulario.
+
+     // Campos del formulario
+        JLabel nombreLabel = new JLabel("Nombre:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panelFormulario.add(nombreLabel, gbc);
+
+        JTextField nombreField = new JTextField();
+        nombreField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        panelFormulario.add(nombreField, gbc);
+
+        JLabel descripcionLabel = new JLabel("Descripcion:");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panelFormulario.add(descripcionLabel, gbc);
+
+        JTextField descripcionField = new JTextField();
+        descripcionField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        panelFormulario.add(descripcionField, gbc);
+
+        // Botón aplicar cambios
+        JButton aplicarCambios = new JButton("Añadir categoría");
+        aplicarCambios.addActionListener(e -> {
+            try {
+            	Categoria nuevaCategoria = new Categoria();
+                nuevaCategoria.setNombreCategoria(nombreField.getText());
+                nuevaCategoria.setDescripcion(descripcionField.getText());
+
+                nuevaCategoria.crearCategoria(); // Llama al método para crear la categoria en la base de datos.
+                JOptionPane.showMessageDialog(formularioInsertar, "Categoria creada correctamente.");
+                formularioInsertar.dispose();
+
+                if (callback != null) {
+                    callback.run(); // Ejecuta el callback para recargar la tabla
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(formularioInsertar,
+                        "Error al añadir la categoría: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        gbc.gridwidth = 2;
+        panelFormulario.add(aplicarCambios, gbc);
+
+        formularioInsertar.add(panelFormulario);
+        formularioInsertar.setVisible(true);
+    }
+    
+} // Class
+
