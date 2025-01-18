@@ -15,8 +15,6 @@ import DAO.DaoUsuario;
  */
 public class Usuario {
 	
-	// Atributos:
-	
 	private int idUsuario;
 	private String nombreUsuario;
 	private String apellido1;
@@ -25,8 +23,6 @@ public class Usuario {
 	private String email;
 	private String contrasena;
 	private String Rol;
-	
-	// Constructores:
 	
 	/**
      * Constructor por defecto (vacio).
@@ -100,8 +96,6 @@ public class Usuario {
 		this.email = email;
 		Rol = rol;
 	}
-
-	// Getters y Setters:
 	
 	/**
 	 * Obtiene el identificador del usuario.
@@ -280,67 +274,29 @@ public class Usuario {
 		usu.insertar(this);
 	}
 	
-	
 	/**
-     * Metodo para listar todos los usuarios registrados en el sistema.
-     * @return String JSON con la lista de usuarios.
-     * @throws SQLException Si ocurre un error al interactuar con la base de datos.
-     */
-	 // Cadena JSON resultante
-	 // Crear objeto Gson
-	 // Crear instancia de DaoSUARIO
-	 // Meter en el objeto json lo que genere el objetoGson con el método toJson (lo convierte a json)
-	 // Convertir la lista de USUARIOS a JSON
-	 // Retornar la cadena JSON
-	/*
-	public String listarUsuarios() throws SQLException {
-		String json = "";
-		Gson objetoGson = new Gson();
-		DaoUsuario resultado = new DaoUsuario();
-		json = objetoGson.toJson(resultado.listar());
-		
-		return json;
-	}
-	*/
-	
+	 * Metodo para listar todos los usuarios de la base de datos
+	 * mediante un objeto del dao.
+	 * @return Lista de objetos Usuario que representa todas las categorias
+	 * almacenadas en la base de datos.
+	 * @throws SQLException
+	 */
 	public List<Usuario> listarUsuarios() throws SQLException {
 	    DaoUsuario daoUsuario = new DaoUsuario();
-	    return daoUsuario.listar(); // Devuelve directamente la lista desde el DAO
+	    
+	    return daoUsuario.listar();
 	}
 	
 	/**
-     * Metodo para recuperar un usuario para modificarlo despues en el formulario.
-     * @param id_Usuario Identificador del usuario a recuperar.
-     * @throws SQLException Si ocurre un error al interactuar con la base de datos.
+     * Metodo para recuperar un usuario por su ID y cargar sus datos.
+     * @param idUsuario Identificador unico del usuario a recuperar.
+     * @return Objeto Usuario recuperado de la base de datos.
+     * @throws SQLException Si ocurre un error en la base de datos
      */
-	/*
-	public void recuperarUsu(int idUsuario) throws SQLException {
-		// Crea instancia de DaoUsuario.
-		DaoUsuario dao = new DaoUsuario();
-		
-		// Lee los datos del usuario desde la base de datos por el idUsuario.
-		// leerUsuario devuelve un objeto Usuario con los datos correspondientes.
-		Usuario u = dao.leerUsuario(idUsuario);
-		
-		// Establecer los datos recuperados en el usuario actual.
-		this.setIdUsuario(u.getIdUsuario());
-		this.setNombreUsuario(u.getNombreUsuario());
-		this.setApellido1(u.getApellido1());
-		this.setApellido2(u.getApellido2());
-		this.setTelefono(u.getTelefono());
-		this.setEmail(u.getEmail());
-		this.setRol(u.getRol());
-	}
-	
-	*/
 	public Usuario recuperarUsu(int idUsuario) throws SQLException {
-	    // Crea instancia de DaoUsuario.
 	    DaoUsuario dao = new DaoUsuario();
-
-	    // Lee los datos del usuario desde la base de datos por el idUsuario.
 	    Usuario u = dao.leerUsuario(idUsuario);
 
-	    // Devuelve el objeto Usuario recuperado.
 	    return u;
 	}
 	

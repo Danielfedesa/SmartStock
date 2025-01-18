@@ -4,10 +4,15 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
-import com.google.gson.Gson;
-
 import DAO.DaoProducto;
 
+/**
+ * Clase Producto que representa la informacion,
+ * constructores y metodos referentes a los
+ * productos del sistema.
+ * @author Daniel Fernandez Sanchez.
+ * @version 1.0 01/2025
+ */
 public class Producto {
 
 	private int idProducto;
@@ -18,9 +23,22 @@ public class Producto {
 	private int stockMinimo;
 	private int idCategoria;
 	
+	/**
+     * Constructor por defecto (vacio).
+     */
 	public Producto() {
 	}
 
+	/**
+	 * Constructor completo Producto.
+	 * @param idProducto Identificador unico del producto.
+	 * @param nombreProducto Nombre del producto.
+	 * @param descripcion Descripcion del producto.
+	 * @param precio Precio del producto.
+	 * @param stock Stock actual del producto.
+	 * @param stockMinimo Stock minimo establecido del producto.
+	 * @param idCategoria Identificador de la categoria a la que pertenece el producto.
+	 */
 	public Producto(int idProducto, String nombreProducto, String descripcion, double precio, int stock,
 			int stockMinimo, int idCategoria) {
 		super();
@@ -33,67 +51,132 @@ public class Producto {
 		this.idCategoria = idCategoria;
 	}
 
+	/**
+	 * Obtiene el identificador del producto.
+	 * @return Identificador del producto.
+	 */
 	public int getIdProducto() {
 		return idProducto;
 	}
 
+	/**
+	 * Establece el identificador del producto.
+	 * @param idProducto Identificador del producto.
+	 */
 	public void setIdProducto(int idProducto) {
 		this.idProducto = idProducto;
 	}
 
+	/**
+	 * Obtiene el nombre del producto.
+	 * @return Nombre del producto.
+	 */
 	public String getNombreProducto() {
 		return nombreProducto;
 	}
 
+	/**
+	 * Establece el nombre del producto.
+	 * @param nombreProducto Nombre del producto.
+	 */
 	public void setNombreProducto(String nombreProducto) {
 		this.nombreProducto = nombreProducto;
 	}
 
+	/**
+	 * Obtiene la descripcion del producto.
+	 * @return Descripcion del producto.
+	 */
 	public String getDescripcion() {
 		return descripcion;
 	}
 
+	/**
+	 * Establece la descripcion del producto.
+	 * @param descripcion Descripcion del producto.
+	 */
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
 
+	/**
+	 * Obtiene el precio del producto.
+	 * @return Precio del producto.
+	 */
 	public double getPrecio() {
 		return precio;
 	}
 
+	/**
+	 * Establece el precio del producto
+	 * @param precio Precio del producto.
+	 */
 	public void setPrecio(double precio) {
 		this.precio = precio;
 	}
 
+	/**
+	 * Obtiene la cantidad de stock actual del producto.
+	 * @return Stock del producto.
+	 */
 	public int getStock() {
 		return stock;
 	}
 
+	/**
+	 * Establece la cantidad de stock del producto.
+	 * @param stock Stock del producto.
+	 */
 	public void setStock(int stock) {
 		this.stock = stock;
 	}
 
+	/**
+	 * Obtiene la cantidad de stock minimo estipulado del producto.
+	 * @return Stock minimo del producto.
+	 */
 	public int getStockMinimo() {
 		return stockMinimo;
 	}
 
+	/**
+	 * Establece la cantidad de stock minimo del producto.
+	 * @param stockMinimo Stock minimo del producto.
+	 */
 	public void setStockMinimo(int stockMinimo) {
 		this.stockMinimo = stockMinimo;
 	}
 
+	/**
+	 * Obtiene el identificador de la categoria a la que pertenece el producto.
+	 * @return Identificador de categoria del producto.
+	 */
 	public int getIdCategoria() {
 		return idCategoria;
 	}
 
+	/**
+	 * Establece el identificador de la categoria a la que pertenece el producto.
+	 * @param idCategoria Identificador de categoria del producto.
+	 */
 	public void setIdCategoria(int idCategoria) {
 		this.idCategoria = idCategoria;
 	}
 
+	/**
+	 * Calcula el codigo hash del objeto Producto.
+	 * @return int Codigo hash del objeto Producto.
+	 */
 	@Override
 	public int hashCode() {
 		return Objects.hash(descripcion, idCategoria, idProducto, nombreProducto, precio, stock, stockMinimo);
 	}
 
+	/**
+	 * Compara dos objetos Producto para verificar si son iguales.
+	 * @param obj Objeto con el cual se va a comparar el producto.
+	 * @return true si los objetos son iguales, false de lo contrario.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -109,6 +192,10 @@ public class Producto {
 				&& stockMinimo == other.stockMinimo;
 	}
 
+	/**
+	 * Devuelve una representacion en forma de cadena del objeto Producto.
+	 * @return String Representacion en cadena del objeto Producto.
+	 */
 	@Override
 	public String toString() {
 		return "Producto [idProducto=" + idProducto + ", nombreProducto=" + nombreProducto + ", descripcion="
@@ -117,7 +204,7 @@ public class Producto {
 	}
 	
 	/**
-     * Metodo para insertar un producto en la base de datos.
+     * Metodo para insertar un nuevo producto en la base de datos.
      * @throws SQLException Si ocurre un error en la base de datos.
      */
 	public void crearProducto() throws SQLException {
@@ -126,47 +213,24 @@ public class Producto {
 	}
 	
 	/**
-     * Metodo para listar todos los productos almacenados en la BD.
-     * @return String JSON con la lista de productos.
-     * @throws SQLException Si ocurre un error al interactuar con la base de datos.
-     */
-	public String listarProductosMal() throws SQLException {
-		String json = "";
-		Gson objetoGson = new Gson();
-		DaoProducto resultado = new DaoProducto();
-		
-		json = objetoGson.toJson(resultado.listar());
-		
-		return json;
-	}
-	
-	
+	 * Metodo para listar todos los productos de la base de datos
+	 * mediante un objeto del dao.
+	 * @return Lista de objetos Producto que representa todos los productos
+	 * almacenadas en la base de datos.
+	 * @throws SQLException
+	 */
 	public List<Producto> listarProductos() throws SQLException {
 		DaoProducto daoProducto = new DaoProducto();
+		
 		return daoProducto.listar();
 	}
 	
 	/**
      * Metodo para recuperar un producto por su ID y cargar sus datos.
-     * @param idProducto Identificador unico del producto.
+     * @param idProducto Identificador unico del producto a recuperar.
+     * @return Objeto Producto recuperado de la base de datos.
      * @throws SQLException Si ocurre un error en la base de datos
      */
-	/*
-	public void recuperarProd(int idProducto) throws SQLException {
-		DaoProducto dao = new DaoProducto();
-		
-		Producto p = dao.leerFormulario(idProducto);
-		
-		this.setIdProducto(p.getIdProducto());
-		this.setNombreProducto(p.getNombreProducto());
-		this.setDescripcion(p.getDescripcion());
-		this.setPrecio(p.getPrecio());
-		this.setStock(p.getStock());
-		this.setStockMinimo(p.getStockMinimo());
-		this.setIdCategoria(p.getIdCategoria());
-	}
-	*/
-	
 	public Producto recuperarPro(int idProducto) throws SQLException {
 	    DaoProducto dao = new DaoProducto();
 	    Producto p = dao.leerProducto(idProducto);
@@ -180,6 +244,7 @@ public class Producto {
      */
 	public boolean actualizarProducto() throws SQLException {
 		DaoProducto daoProd = new DaoProducto();
+		
 		return daoProd.actualizarProducto(this);
 	}
 	

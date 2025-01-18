@@ -14,14 +14,10 @@ import DAO.DaoCategoria;
  * @version 1.0 01/2025
  */
 public class Categoria {
-
-	// Atributos:
 	
 	private int idCategoria;
 	private String nombreCategoria;
 	private String descripcion;
-	
-	// Constructores:
 	
 	/**
      * Constructor por defecto (vacio).
@@ -52,8 +48,6 @@ public class Categoria {
 		this.nombreCategoria = nombreCategoria;
 		this.descripcion = descripcion;
 	}
-
-	// Getters y Setters:
 	
 	/**
 	 * Obtiene el identificador de la categoria.
@@ -149,28 +143,25 @@ public class Categoria {
 		cat.crearCategoria(this);
 	}
 	
+	/**
+	 * Metodo para listar todas las categorias de la base de datos
+	 * mediante un objeto del dao.
+	 * @return Lista de objetos Categoria que representa todas las categorias
+	 * almacenadas en la base de datos.
+	 * @throws SQLException
+	 */
 	public List<Categoria> listarCategorias() throws SQLException {
 		DaoCategoria daoCategoria = new DaoCategoria();
+		
 		return daoCategoria.listar();
 	}
 	
 	/**
      * Metodo para recuperar una categoria por su ID y cargar sus datos.
-     * @param idCategoria Identificador unico de la categoria.
+     * @param idCategoria Identificador unico de la categoria a recuperar.
+     * @return Objeto Categoria recuperado de la base de datos.
      * @throws SQLException Si ocurre un error en la base de datos
      */
-	/*
-	public void recuperarCategoria(int idCategoria) throws SQLException {
-		DaoCategoria dao = new DaoCategoria();
-		
-		Categoria c = dao.leerCategoria(idCategoria);
-		
-		this.setIdCategoria(c.getIdCategoria());
-		this.setNombreCategoria(c.getNombreCategoria());
-		this.setDescripcion(c.getDescripcion());
-	}
-	*/
-	
 	public Categoria recuperarCat(int idCategoria) throws SQLException {
 		DaoCategoria dao = new DaoCategoria();
 		Categoria c = dao.leerCategoria(idCategoria);

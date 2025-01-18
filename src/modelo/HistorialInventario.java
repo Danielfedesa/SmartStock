@@ -15,18 +15,14 @@ import DAO.DaoHistorialInventario;
  * @version 1.0 01/2025
  */
 public class HistorialInventario {
-	
-	// Atributos:
-	
+
 	private int idHistorial;
 	private int idProducto;
 	private int idUsuario;
 	private int cantidad;
 	private String tipoMovimiento;
 	private Timestamp fecha;
-	
-	// Constructores:
-	
+
 	/**
      * Constructor por defecto (vacio).
      */
@@ -65,9 +61,6 @@ public class HistorialInventario {
         this.tipoMovimiento = tipoMovimiento;
         this.fecha = new Timestamp(System.currentTimeMillis());
     }
-
-	// Getters y Setters:
-	
 	
 	/**
 	 * Obtiene el identificador del historial.
@@ -165,11 +158,20 @@ public class HistorialInventario {
 		this.fecha = fecha;
 	}
 	
+	/**
+	 * Calcula el codigo hash del objeto HistorialInventario.
+	 * @return int Codigo hash del objeto HistorialInventario.
+	 */
 	@Override
 	public int hashCode() {
 		return Objects.hash(cantidad, fecha, idHistorial, idProducto, idUsuario, tipoMovimiento);
 	}
 
+	/**
+	 * Compara dos objetos HistorialInventario para verificar si son iguales.
+	 * @param obj Objeto con el cual se va a comparar el historial.
+	 * @return true si los objetos son iguales, false de lo contrario.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -184,7 +186,10 @@ public class HistorialInventario {
 				&& Objects.equals(tipoMovimiento, other.tipoMovimiento);
 	}
 	
-
+	/**
+	 * Devuelve una representacion en forma de cadena del objeto HistorialInventario.
+	 * @return String Representacion en cadena del objeto HistorialInventario.
+	 */
 	@Override
 	public String toString() {
 		return "HistorialInventario [idHistorial=" + idHistorial + ", idProducto=" + idProducto + ", idUsuario="
@@ -192,6 +197,10 @@ public class HistorialInventario {
 				+ "]";
 	}
 
+	/**
+     * Metodo para insertar un nuevo movimiento de stock en la base de datos.
+     * @throws SQLException Si ocurre un error en la base de datos.
+     */
 	public void insertarMovimiento() throws SQLException {
 		DaoHistorialInventario dao = new DaoHistorialInventario();
 		try {
@@ -202,6 +211,13 @@ public class HistorialInventario {
 		}
 	}
 	
+	/**
+	 * Metodo para listar todos los movimientos de stock de la base de datos
+	 * mediante un objeto del dao.
+	 * @return Lista de objetos HistorialInventario que representa todos los
+	 * movimientos almacenados en la base de datos.
+	 * @throws SQLException
+	 */
 	public List<HistorialInventario> listarMovimientos() throws SQLException {
 		DaoHistorialInventario daoInventario = new DaoHistorialInventario();
 		return daoInventario.listarMov();

@@ -12,15 +12,31 @@ import java.util.Objects;
 
 import DAO.DaoCopiaSeguridad;
 
+/**
+ * Clase CopiaSeguridad que representa la informacion,
+ * constructores y metodos referentes a las
+ * copias de seguridad del sistema.
+ * @author Daniel Fernandez Sanchez.
+ * @version 1.0 01/2025
+ */
 public class CopiaSeguridad {
 
 	private int idBackup;
 	private Timestamp fechaBackup;
 	private String rutaArchivo;
 	
+	/**
+     * Constructor por defecto (vacio).
+     */
 	public CopiaSeguridad() {
 	}
 
+	/**
+	 * Constructor completo CopiaSeguridad.
+	 * @param idBackup Identificador unico de la copia de seguridad.
+	 * @param fechaBackup Fecha y hora de realizacion de la copia.
+	 * @param rutaArchivo Ruta donde se almacena el archivo.
+	 */
 	public CopiaSeguridad(int idBackup, Timestamp fechaBackup, String rutaArchivo) {
 		super();
 		this.idBackup = idBackup;
@@ -28,35 +44,68 @@ public class CopiaSeguridad {
 		this.rutaArchivo = rutaArchivo;
 	}
 
+	/**
+	 * Obtiene el identificador de la copia.
+	 * @return idBackup Identificador de la copia.
+	 */
 	public int getIdBackup() {
 		return idBackup;
 	}
 
+	/**
+	 * Establece el identificador de la copia.
+	 * @param idBackup Identificador de la copia.
+	 */
 	public void setIdBackup(int idBackup) {
 		this.idBackup = idBackup;
 	}
 
+	/**
+	 * Obtiene la fecha y hora de la realizacion de la copia.
+	 * @return fechaBackup Fecha y hora de realizacion de la copia.
+	 */
 	public Timestamp getFechaBackup() {
 		return fechaBackup;
 	}
 
+	/**
+	 * Establece la fecha y hora de la realizacion de la copia.
+	 * @param fechaBackup Fecha y hora de realizacion de la copia.
+	 */
 	public void setFechaBackup(Timestamp fechaBackup) {
 		this.fechaBackup = fechaBackup;
 	}
 
+	/**
+	 * Obtiene la ruta de almacenamiento del archivo.
+	 * @return rutaArchivo Ruta de almacenamiento del archivo.
+	 */
 	public String getRutaArchivo() {
 		return rutaArchivo;
 	}
 
+	/**
+	 * Establece la ruta de almacenamiento del archivo.
+	 * @param rutaArchivo Ruta de almacenamiento del archivo.
+	 */
 	public void setRutaArchivo(String rutaArchivo) {
 		this.rutaArchivo = rutaArchivo;
 	}
 
+	/**
+	 * Calcula el codigo hash del objeto CopiaSeguridad.
+	 * @return int Codigo hash del objeto CopiaSeguridad.
+	 */
 	@Override
 	public int hashCode() {
 		return Objects.hash(fechaBackup, idBackup, rutaArchivo);
 	}
 
+	/**
+	 * Compara dos objetos CopiaSeguridad para verificar si son iguales.
+	 * @param obj Objeto con el cual se va a comparar la copia de seguridad.
+	 * @return true si los objetos son iguales, false de lo contrario.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -70,6 +119,10 @@ public class CopiaSeguridad {
 				&& Objects.equals(rutaArchivo, other.rutaArchivo);
 	}
 
+	/**
+	 * Devuelve una representacion en forma de cadena del objeto CopiaSeguridad.
+	 * @return String Representacion en cadena del objeto CopiaSeguridad.
+	 */
 	@Override
 	public String toString() {
 		return "CopiaSeguridad [idBackup=" + idBackup + ", fechaBackup=" + fechaBackup + ", rutaArchivo=" + rutaArchivo
@@ -77,8 +130,11 @@ public class CopiaSeguridad {
 	}
 	
 	/**
-	 * Metodo para realizar una copia de seguridad de la base de datos.
-	 * @throws SQLException Si ocurre un error al interactuar con la base de datos.
+	 * Metodo para generar un archivo de copia de seguridad de la base de datos utilizando la herramienta
+	 * 'mysqldump'. La copia se guarda en una ubicación especifica, cuyo nombre incluye la fecha y la hora actual.
+	 * 
+	 * Si el proceso se ejecuta correctamente, también se registra la ruta del archivo de copia de seguridad en la base de datos. 
+	 * @throws SQLException Si ocurre un error al ejecutar el comando para crear la copia de seguridad o al registrar la ruta en la base de datos.
 	 */
 	public void realizarBackup() throws SQLException {
 		
@@ -117,10 +173,18 @@ public class CopiaSeguridad {
 	    } catch (Exception e) {
 	        throw new SQLException("Error al realizar la copia de seguridad: " + e.getMessage());
 	    }
-	} // Cierre del metodo.
+	}
 	
+	/**
+	 * Metodo para listar mediante un objeto dao todos los
+	 * registros de copias de seguridad almacenados en la base de datos.
+	 * @return Lista de objetos CopiaSeguridad que representa todos los
+	 * registros almacenados en la base de datos.
+	 * @throws SQLException
+	 */
 	public List<CopiaSeguridad> listarCopias() throws SQLException {
 		DaoCopiaSeguridad daoCopia = new DaoCopiaSeguridad();
+		
 		return daoCopia.listar();
 	}
 	
