@@ -28,7 +28,9 @@ public class Login {
 		this.usuarioDao = usuarioDao;
 	}
 	
-	// Constructor sin parámetros
+    /**
+     * Constructor vacio.
+     */
     public Login() {
         try {
             // Inicializa el DAO internamente

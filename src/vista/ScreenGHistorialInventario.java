@@ -17,8 +17,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
+import controlador.UsuarioSesion;
 import modelo.HistorialInventario;
 
 public class ScreenGHistorialInventario extends JFrame {
@@ -60,7 +62,7 @@ public class ScreenGHistorialInventario extends JFrame {
         gbcSuperior.fill = GridBagConstraints.HORIZONTAL; // Ajuste horizontal
 
         // Título de la pantalla
-        JLabel tituloLabel = new JLabel("Gestión de inventario", JLabel.CENTER);
+        JLabel tituloLabel = new JLabel("Historial movimientos de stock", JLabel.CENTER);
         tituloLabel.setFont(fuenteTitulo);
         tituloLabel.setForeground(Color.DARK_GRAY);
         gbcSuperior.gridx = 0;
@@ -78,11 +80,20 @@ public class ScreenGHistorialInventario extends JFrame {
             BorderFactory.createLineBorder(botonColor.darker(), 1),
             BorderFactory.createEmptyBorder(5, 15, 5, 15)
         ));
+        
         botonVolver.addActionListener(e -> {
-            // Lógica para volver al dashboard
-            new ScreenDashboardAdmin().setVisible(true); // Abre la pantalla del dashboard
+            // Lógica para volver al dashboard según el rol del usuario.
+        	String rol = UsuarioSesion.getRolUsuarioActual();
+        	
+        	if ("admin".equals(rol)) {
+        		new ScreenDashboardAdmin().setVisible(true);
+        	} else if ("empleado".equals(rol)) {
+        		new ScreenDashboard().setVisible(true);
+        	}
+        	
             this.dispose(); // Cierra la pantalla actual
         });
+        
         gbcSuperior.gridx = 0;
         gbcSuperior.gridy = 1; // Debajo del título
         gbcSuperior.gridwidth = 2; // Ocupa solo una columna
@@ -110,18 +121,18 @@ public class ScreenGHistorialInventario extends JFrame {
         
      // Configuración de ancho fijo para las columnas
         tablaProductos.getColumnModel().getColumn(0).setPreferredWidth(10);  // Columna ID Historial
-        tablaProductos.getColumnModel().getColumn(1).setPreferredWidth(200); // Columna ID Producto
-        tablaProductos.getColumnModel().getColumn(2).setPreferredWidth(400); // Columna ID Usuario
+        tablaProductos.getColumnModel().getColumn(1).setPreferredWidth(10); // Columna ID Producto
+        tablaProductos.getColumnModel().getColumn(2).setPreferredWidth(10); // Columna ID Usuario
         tablaProductos.getColumnModel().getColumn(3).setPreferredWidth(20); // Columna Cantidad
         tablaProductos.getColumnModel().getColumn(4).setPreferredWidth(20); // Columna Movimiento
-        tablaProductos.getColumnModel().getColumn(5).setPreferredWidth(20); // Columna Fecha
+        tablaProductos.getColumnModel().getColumn(5).setPreferredWidth(50); // Columna Fecha
 
         // Rellenar la tabla con datos desde el backend.
         cargarDatosTabla(modeloTabla);
         
         // Panel con la tabla.
         JScrollPane scrollTabla = new JScrollPane(tablaProductos);
-        scrollTabla.setBorder(BorderFactory.createEmptyBorder(100, 80, 20, 80));
+        scrollTabla.setBorder(BorderFactory.createEmptyBorder(50, 300, 20, 300));
 
 
         // Agregar paneles al contenedor principal.
@@ -150,6 +161,13 @@ public class ScreenGHistorialInventario extends JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al cargar los productos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            HistorialInventario histo = new HistorialInventario();
+            new ScreenGHistorialInventario(histo).setVisible(true);
+        });
     }
 
    

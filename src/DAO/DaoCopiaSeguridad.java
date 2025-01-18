@@ -56,6 +56,14 @@ public class DaoCopiaSeguridad {
 		ps.close();
 	}
 
+	/**
+	 * Metodo para obtener todas las filas de la tabla "copiasseguridad",
+	 * creando una lista de objetos `CopiaSeguridad` a partir de los resultados obtenidos.
+	 * 
+	 * @return Una lista de objetos `CopiaSeguridad` que representan todas las copias de seguridad,
+	 *         o null si no se encontraron copias de seguridad en la base de datos.
+	 * @throws SQLException Si ocurre un error durante la consulta a la base de datos.
+	 */
 	public ArrayList<CopiaSeguridad> listar() throws SQLException {
 		
 		String sql = "SELECT * FROM copiasseguridad";

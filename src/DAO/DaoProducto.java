@@ -40,7 +40,6 @@ public class DaoProducto {
 	/**
 	 * Metodo para insertar un nuevo producto en la base de datos. 
 	 * @param p Objeto Producto para insertar.
-	 * @return ID del producto insertado.
 	 * @throws SQLException Si hay un error de insercion en base de datos.
 	 */
 	public void insertar(Producto p) throws SQLException {
@@ -125,37 +124,49 @@ public class DaoProducto {
 	 */
 	public boolean actualizarProducto(Producto prod) {
 		
-		try {
-			
-		
-		String sql = "UPDATE productos SET nombre_Producto = ?, descripcion = ?, "
-				+ "precio = ?, stock = ?, stock_Minimo = ?, id_Categoria = ? WHERE id_Producto = ?";
-		
-		PreparedStatement ps = con.prepareStatement(sql);
-		
-		ps.setString(1, prod.getNombreProducto());
-		ps.setString(2, prod.getDescripcion());
-		ps.setDouble(3, prod.getPrecio());
-		ps.setInt(4, prod.getStock());
-		ps.setInt(5, prod.getStockMinimo());
-		ps.setInt(6, prod.getIdCategoria());
-		ps.setInt(7,  prod.getIdProducto());
-		
-		int rs = ps.executeUpdate();
-		
-		if (rs == 1) {
-			return true;
-			} else {
-				return false;
-		}
-		
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
+		PreparedStatement ps = null;
+
+	    try {
+	        // Sentencia SQL para actualizar un producto en la base de datos
+	        String sql = "UPDATE productos SET nombre_Producto = ?, descripcion = ?, "
+	                + "precio = ?, stock = ?, stock_Minimo = ?, id_Categoria = ? WHERE id_Producto = ?";
+
+	        ps = con.prepareStatement(sql);
+
+	        ps.setString(1, prod.getNombreProducto());
+	        ps.setString(2, prod.getDescripcion());
+	        ps.setDouble(3, prod.getPrecio());
+	        ps.setInt(4, prod.getStock());
+	        ps.setInt(5, prod.getStockMinimo());
+	        ps.setInt(6, prod.getIdCategoria());
+	        ps.setInt(7, prod.getIdProducto());
+
+	        int rs = ps.executeUpdate();
+
+	        return rs == 1;
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false; // Si ocurre un error
+	    } finally {
+	        // Cerrar el PreparedStatement si fue inicializado
+	        if (ps != null) {
+	            try {
+	                ps.close();
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
 	}
-		
+	
+	/**
+	 * Metodo para eliminar un producto en la base de datos
+	 * identificado por su ID. Si el producto no existe, no se realiza ninguna accion.
+	 * 
+	 * @param idProducto El ID del producto que se desea eliminar.
+	 * @throws SQLException Si ocurre un error al ejecutar la sentencia SQL.
+	 */
 	public static void borrarProducto(int idProducto) throws SQLException {
 		
 		String sql = "DELETE FROM productos WHERE id_Producto = ?";
@@ -190,7 +201,7 @@ public class DaoProducto {
 
 	    ps.close();
 
-	    return result; // Retorna la lista (vacía si no hay resultados)
+	    return result;
 	}
 	
 } // Class

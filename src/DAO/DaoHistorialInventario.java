@@ -38,31 +38,12 @@ public class DaoHistorialInventario {
 	}
 	
 	/**
-	 * Metodo para insertar un nuevo movimiento en la base de datos. 
-	 * @param m Objeto HistorialInventario para insertar.
-	 * @return ID del movimiento insertado.
-	 * @throws SQLException Si hay un error de insercion en base de datos.
+	 * Metodo para insertar un nuevo registro en la tabla `historialinventario`
+	 * con la informacion del movimiento de un producto.
+	 * 
+	 * @param historial El objeto `HistorialInventario` que contiene los detalles del movimiento a registrar.
+	 * @throws Exception Si ocurre un error durante la ejecución de la sentencia SQL.
 	 */
-	/*
-	public void insertarMov(HistorialInventario m) throws SQLException {
-		
-		String sql = "INSERT INTO historialinventario (id_Producto, cantidad, tipo_Movimiento, fecha) VALUES (?, ?, ?, ?)";
-		
-		PreparedStatement ps = con.prepareStatement(sql);
-		
-		ps.setInt(1, m.getIdProducto());
-		ps.setInt(2, m.getCantidad());
-		ps.setString(3, m.getTipoMovimiento());
-		ps.setTimestamp(4, m.getFecha());
-		
-		@SuppressWarnings("unused")
-		int filas = ps.executeUpdate();
-		
-		ps.close();
-	}
-	
-	*/
-	
 	public void registrarMovimiento(HistorialInventario historial) throws Exception {
 	    String sql = "INSERT INTO historialinventario (id_Producto, id_Usuario, cantidad, tipo_Movimiento) VALUES (?, ?, ?, ?)";
 
@@ -73,6 +54,8 @@ public class DaoHistorialInventario {
 	        ps.setString(4, historial.getTipoMovimiento());
 
 	        ps.executeUpdate();
+	        
+	        ps.close();
 	    }
 	}
 	

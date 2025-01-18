@@ -6,13 +6,12 @@ import java.sql.SQLException;
 
 /**
  * Clase con los atributos para la conexion con la base de datos.
+ * @author Daniel Fernandez Sanchez
+ * @version 1.0 01/2025
  */
 public class ConexionDB {
 
-	/*
-	 * Para realizar la conexión importamos los recursos externos
-	 * necesarias (servidor apache y librería SQL)
-	 */
+	 // Para realizar la conexión importamos previamente los recursos externos de la libreria MySQL
 
 	/**
      * URL de conexion a la base de datos.
@@ -31,12 +30,10 @@ public class ConexionDB {
      * @throws SQLException si ocurre un error al establecer la conexion.
      */
 	public static Connection getConexion() throws SQLException {
-		// Debemos meterlo en un if por si llamamos a la clase por segunda vez y ya está
+		// Debemos meterlo en un if por si llamamos a la clase por segunda vez y ya esta
 		// conectada.
 		if (instance == null) {
 
-			// Queremos que este método se conecte a
-			// "jdbc:mysql://localhost:3360/alcaride_bd" y me lo devuelva generando una instancia.
 			instance = DriverManager.getConnection(JDBC_URL, "Daniel", "1234");
 		}
 		return instance;

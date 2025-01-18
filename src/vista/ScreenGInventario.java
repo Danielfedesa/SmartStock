@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
+import controlador.UsuarioSesion;
 import modelo.Producto;
 
 public class ScreenGInventario extends JFrame {
@@ -80,11 +81,20 @@ public class ScreenGInventario extends JFrame {
             BorderFactory.createLineBorder(botonColor.darker(), 1),
             BorderFactory.createEmptyBorder(5, 15, 5, 15)
         ));
+        
         botonVolver.addActionListener(e -> {
-            // Lógica para volver al dashboard
-            new ScreenDashboardAdmin().setVisible(true); // Abre la pantalla del dashboard
+            // Lógica para volver al dashboard según el rol del usuario.
+        	String rol = UsuarioSesion.getRolUsuarioActual();
+        	
+        	if ("admin".equals(rol)) {
+        		new ScreenDashboardAdmin().setVisible(true);
+        	} else if ("empleado".equals(rol)) {
+        		new ScreenDashboard().setVisible(true);
+        	}
+        	
             this.dispose(); // Cierra la pantalla actual
         });
+        
         gbcSuperior.gridx = 0;
         gbcSuperior.gridy = 1; // Debajo del título
         gbcSuperior.gridwidth = 2; // Ocupa solo una columna

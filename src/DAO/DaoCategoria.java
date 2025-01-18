@@ -40,7 +40,6 @@ public class DaoCategoria {
 	/**
 	 * Metodo para crear una nueva categoria en la base de datos. 
 	 * @param c Objeto Categoria para insertar.
-	 * @return ID de la catedoria insertada.
 	 * @throws SQLException Si hay un error de insercion en base de datos.
 	 */
 	public void crearCategoria(Categoria c) throws SQLException {
@@ -58,8 +57,8 @@ public class DaoCategoria {
 	}
 	
 	/**
-	 * Metodo para listar todos los productos de la base de datos.
-	 * @return ArrayList de Producto con los datos de los productos.
+	 * Metodo para listar todas las categorias de la base de datos.
+	 * @return ArrayList de Categoria con los datos de las categorias.
 	 * @throws SQLException Si hay un error de lectura en base de datos
 	 */
 	public ArrayList<Categoria> listar() throws SQLException {
@@ -77,8 +76,7 @@ public class DaoCategoria {
 				result = new ArrayList<Categoria>();
 			}
 			
-			result.add(new Categoria(rs.getInt(1), rs.getString(2), rs.getString(3)));
-			
+			result.add(new Categoria(rs.getInt(1), rs.getString(2), rs.getString(3)));	
 		}
 		
 		ps.close();
@@ -111,33 +109,53 @@ public class DaoCategoria {
 		return c;
 	}
 	
+	/**
+	 * Metodo para actualizar el nombre y la descripcion
+	 * de una categoria especifica en la base de datos, identificado por su ID.
+	 * 
+	 * @param cate El objeto Categoria que contiene la nueva informacion a actualizar.
+	 * @return true si la categoría se actualizo correctamente, false en caso contrario.
+	 */
 	public boolean actualizarCategoria(Categoria cate) {
 		
-		try {
-			
-		String sql = "UPDATE categorias SET nombre_Categoria = ?, descripcion = ? WHERE id_Categoria = ?";
-		
-		PreparedStatement ps = con.prepareStatement(sql);
-		
-		ps.setString(1, cate.getNombreCategoria());
-		ps.setString(2, cate.getDescripcion());
-		ps.setInt(3, cate.getIdCategoria());
-		
-		int rs = ps.executeUpdate();
-		
-		if (rs == 1) {
-			return true;
-		} else {
-			return false;
+		 PreparedStatement ps = null;
+
+		    try {
+		        String sql = "UPDATE categorias SET nombre_Categoria = ?, descripcion = ? WHERE id_Categoria = ?";
+
+		        ps = con.prepareStatement(sql);
+
+		        ps.setString(1, cate.getNombreCategoria());
+		        ps.setString(2, cate.getDescripcion());
+		        ps.setInt(3, cate.getIdCategoria());
+
+		        int rs = ps.executeUpdate();
+
+		        // Retorna true si actualiza, false en caso contrario.
+		        return rs == 1;
+
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		        return false; // Si ocurre un error, la actualizacion falla
+		    } finally {
+		        // Cerrar el PreparedStatement si fue inicializado
+		        if (ps != null) {
+		            try {
+		                ps.close();
+		            } catch (SQLException e) {
+		                e.printStackTrace();
+		            }
+		        }
+		    }
 		}
-		
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		} // Cierre del catch
-	}
 	
+	/**
+	 * Metodo para eliminar una categoria en la base de datos
+	 * identificada por su ID. Si la categoria no existe, no se realiza ninguna accion.
+	 * 
+	 * @param idCategoria El ID de la categoría que se desea eliminar.
+	 * @throws SQLException Si ocurre un error al ejecutar la sentencia SQL.
+	 */
 	public static void borrarCategoria(int idCategoria) throws SQLException {
 		
 		String sql = "DELETE FROM categorias WHERE id_Categoria = ?";

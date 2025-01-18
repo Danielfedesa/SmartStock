@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import controlador.ConexionDB;
@@ -37,8 +36,19 @@ public class DaoUsuario {
 	public DaoUsuario() throws SQLException {
 		this.con = ConexionDB.getConexion();
 	}
-	
-	// MIRAR ESTE MÉTODO Y VER SI EL ANTERIOR ME HACE FALTA PARA INICIAR SESION
+
+	/**
+	 * Método para consultar la base de datos y verificar si las credenciales proporcionadas 
+	 * (email y contrasena) coinciden con los datos almacenados en la tabla `usuarios`.
+	 * Si las credenciales son correctas, se devuelve un objeto `Usuario`
+	 * con la informacion del usuario. Si las credenciales no son válidas, se retorna `null`.
+	 * 
+	 * @param email El correo electronico del usuario a validar.
+	 * @param contrasena La contrasena del usuario a validar.
+	 * @return Un objeto `Usuario` con el ID y el rol del usuario si las credenciales son correctas, 
+	 *         o `null` si las credenciales no son validas.
+	 * @throws Exception Si ocurre un error al ejecutar la consulta en la base de datos.
+	 */
 	public Usuario validarCredenciales(String email, String contrasena) throws Exception {
 		
 		String sql = "SELECT rol, id_Usuario FROM usuarios WHERE email = ? AND contrasena = ?";
@@ -64,19 +74,14 @@ public class DaoUsuario {
 	/**
 	 * Metodo para insertar un nuevo usuario en la base de datos. 
 	 * @param u Objeto Usuario para insertar.
-	 * @return ID del usuario insertado.
 	 * @throws SQLException Si hay un error de insercion en base de datos.
 	 */
-	public int insertar(Usuario u) throws SQLException {
-		// Sentencia SQL para insertar un nuevo registro en la tabla usuarios.
-		String sql = "INSERT INTO usuarios (nombre_Usuario, apellido1, apellido2, telefono, email, contrasena, rol) VALUES (?, ?, ?, ?, ?, ?, ?)";
+	public void insertar(Usuario u) throws SQLException {
+		String sql = "INSERT INTO usuarios (nombre_Usuario, apellido1, apellido2, telefono, email, contrasena, rol)"
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
 		
-		int id = 0;
+		PreparedStatement ps = con.prepareStatement(sql);
 		
-		// Prepara la sentencia SQL y obtiene el ID generado con el GENERATED_KEYS
-		PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-		
-		// Establece los parámetros en la sentencia SQL.
 		ps.setString(1, u.getNombreUsuario());
 		ps.setString(2, u.getApellido1());
 		ps.setString(3, u.getApellido2());
@@ -85,19 +90,10 @@ public class DaoUsuario {
 		ps.setString(6, u.getContrasena());
 		ps.setString(7, u.getRol());
 		
-		// Ejecuta la sentencia y actualiza el numero de filas afectadas.
 		@SuppressWarnings("unused")
 		int filas = ps.executeUpdate();
 		
-		// Obtiene el ID generado.
-		ResultSet rs = ps.getGeneratedKeys();
-		if (rs.next()) {
-			id = rs.getInt(1);
-		}
-		
 		ps.close();
-		
-		return id;
 	}
 	
 	/**
@@ -107,13 +103,10 @@ public class DaoUsuario {
 	 */
 	public ArrayList<Usuario> listar() throws SQLException {
 		
-		// Sentencia para seleccionar todos los registros.
 		String sql = "SELECT id_Usuario, nombre_Usuario, apellido1, apellido2, telefono, email, rol FROM usuarios ";
-		
-		// Prepara la sentencia SQL.
+
 		PreparedStatement ps = con.prepareStatement(sql);
 		
-		// Almacena los datos en un objeto ResultSet.
 		ResultSet rs = ps.executeQuery();
 		
 		// Inicializa el ArrayList para almacenar los objetos de Usuario.
@@ -149,16 +142,12 @@ public class DaoUsuario {
 	 * @throws SQLException Si hay un error de lectura en base de datos.
 	 */
 	public Usuario leerUsuario(int idUsuario) throws SQLException {
-		// Sentencia para seleccionar un registro en la bd.
 		String sql = "SELECT id_Usuario, nombre_Usuario, apellido1, apellido2, telefono, email, rol FROM usuarios WHERE id_Usuario=?";
 		
-		// Prepara la sentencia SQL.
 		PreparedStatement ps = con.prepareStatement(sql);
 		
-		// Manda el preparedStatement y el idUsuario.
 		ps.setInt(1,  idUsuario);
 		
-		// Ejecuta la consulta y obtiene el resultado.
 		ResultSet rs = ps.executeQuery();
 		rs.next();
 		
@@ -183,57 +172,54 @@ public class DaoUsuario {
 	 * @return true si la actualizacion fue correcta, false si esta falla.
 	 */
 	public boolean actualizarUsuario(Usuario user) {
-		
-		// Sentencia para actualizar un registro de la tabla usuarios por su ID.
-		try {
-			String sql = "UPDATE usuarios SET nombre_Usuario =?, apellido1 =?, apellido2 =?,"
-					+ "telefono =?, email =?, rol =? WHERE id_Usuario =?";
-			
-			// Prepara la sentencia SQL.
-			PreparedStatement ps = con.prepareStatement(sql);
-			
-			// Establece los parametros en la sentencia SQL.
-			ps.setString(1, user.getNombreUsuario());
-			ps.setString(2, user.getApellido1());
-			ps.setString(3, user.getApellido2());
-			ps.setInt(4, user.getTelefono());
-			ps.setString(5, user.getEmail());
-			ps.setString(6, user.getRol());
-			ps.setInt(7, user.getIdUsuario());
-			
-			// Ejecuta la sentencia y obtiene el resultado.
-			int rs = ps.executeUpdate();
-			
-			// Comprueba si se ha insertado correctamente y devuelve true o false.
-			if (rs == 1) {
-				return true;
-				} else {
-					return false;
-			}
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
+	    PreparedStatement ps = null;
+
+	    try {
+	        String sql = "UPDATE usuarios SET nombre_Usuario =?, apellido1 =?, apellido2 =?, "
+	                + "telefono =?, email =?, rol =? WHERE id_Usuario =?";
+
+	        ps = con.prepareStatement(sql);
+
+	        ps.setString(1, user.getNombreUsuario());
+	        ps.setString(2, user.getApellido1());
+	        ps.setString(3, user.getApellido2());
+	        ps.setInt(4, user.getTelefono());
+	        ps.setString(5, user.getEmail());
+	        ps.setString(6, user.getRol());
+	        ps.setInt(7, user.getIdUsuario());
+
+	        int rs = ps.executeUpdate();
+
+	        // Retornar true si la actualizacion fue ok
+	        return rs == 1;
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false; // Si ocurre un error
+	    } finally {
+	        // Cerrar el PreparedStatement si fue inicializado
+	        if (ps != null) {
+	            try {
+	                ps.close();
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
 	}
 	
 	/**
 	 * Metodo para eliminar un usuario de la base de datos.
-	 * @param e Objeto Usuario para eliminar.
+	 * @param idUsuario Id del usuario que se desea eliminar.
 	 * @throws SQLException Si hay un error de eliminacion en base de datos.
 	 */
 	public static void eliminarUsuario(int idUsuario) throws SQLException {
-		// Sentencia para eliminar un registro de la tabla usuarios por su ID.
 		String sql = "DELETE FROM usuarios WHERE id_Usuario = ?";
 		
-		// Prepara la sentencia SQL.
 		PreparedStatement ps = con.prepareStatement(sql);
 		
-		// Manda el preparedStatement y el id.
 		ps.setInt(1, idUsuario);
 		
-		// Ejecuta la sentencia.
 		@SuppressWarnings("unused")
 		int filas = ps.executeUpdate();
 		

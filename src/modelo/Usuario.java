@@ -273,16 +273,11 @@ public class Usuario {
 	
 	/**
      * Metodo para crear un nuevo usuario en la base de datos.
-     * @return int Identificador del usuario insertado
      * @throws SQLException Si ocurre un error al interactuar con la base de datos
      */
-	// Crear una instancia de DaoUsuario
-	// Insertar el usuario actual en la base de datos
-	// Retornar el resultado de la inserción
-	public int crearUsuario() throws SQLException {
+	public void crearUsuario() throws SQLException {
 		DaoUsuario usu = new DaoUsuario();
-		int id_UsuarioInsertado = usu.insertar(this);
-		return id_UsuarioInsertado;
+		usu.insertar(this);
 	}
 	
 	
