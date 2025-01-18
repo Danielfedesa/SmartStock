@@ -12,8 +12,7 @@ public class BackupAutomatico implements Runnable {
 			try {
 				CopiaSeguridad copia = new CopiaSeguridad();
 				copia.realizarBackup();
-				System.out.println("Copia de seguridad realizada correctamente");
-				Thread.sleep(86400000); // Espera 24 horas.
+				Thread.sleep(60000); // 86400000 Espera 24 horas.
 			} catch (Exception e) {
 				System.out.println("Error al crear la copia de seguridad");
 			}

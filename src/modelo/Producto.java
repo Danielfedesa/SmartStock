@@ -199,19 +199,22 @@ public class Producto {
 	 * @throws SQLException Si ocurre un error al interactuar con la base de datos.
 	 */
 	public String verificarStockMinimo() throws SQLException {
-		DaoProducto daoProd = new DaoProducto();
-		List<Producto> productos = daoProd.listarMinimo(); // Obtiene la lista de todos los productos.
-		StringBuilder alertas = new StringBuilder();
-		
-		for (Producto producto : productos) {
-			if (producto.getStock() < producto.getStockMinimo()) {
-				alertas.append("Producto: ").append(producto.getNombreProducto())
-						.append(", Stock actual: ").append(producto.getStock())
-						.append(", Stock mínimo: ").append(producto.getStockMinimo()).append("\n");
-			}
-		}
-		
-		return alertas.toString();
+	    DaoProducto daoProd = new DaoProducto();
+	    List<Producto> productos = daoProd.listarMinimo(); // Obtiene la lista de productos con stock bajo
+	    StringBuilder alertas = new StringBuilder();
+
+	    if (productos.isEmpty()) { // Verifica si la lista está vacía
+	        return "No hay productos con stock bajo.";
+	    }
+
+	    // Itera sobre los productos y genera las alertas
+	    for (Producto producto : productos) {
+	        alertas.append("Producto: ").append(producto.getNombreProducto())
+	               .append(", Stock actual: ").append(producto.getStock())
+	               .append(", Stock mínimo: ").append(producto.getStockMinimo()).append("\n");
+	    }
+
+	    return alertas.toString();
 	}
 	
 } // Class

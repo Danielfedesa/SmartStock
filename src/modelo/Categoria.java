@@ -149,11 +149,6 @@ public class Categoria {
 		cat.crearCategoria(this);
 	}
 	
-	/**
-     * Metodo para listar todas las categorias de la BD.
-     * @return String JSON con la lista de categorias.
-     * @throws SQLException Si ocurre un error al interactuar con la base de datos.
-     */
 	public List<Categoria> listarCategorias() throws SQLException {
 		DaoCategoria daoCategoria = new DaoCategoria();
 		return daoCategoria.listar();

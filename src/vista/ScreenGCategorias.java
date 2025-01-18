@@ -136,7 +136,7 @@ public class ScreenGCategorias extends JFrame {
             return botonEditar;
         });
 
-     // Renderizador y editor para el botón "Editar".
+        // Renderizador y editor para el botón "Editar".
         tablaCategorias.getColumnModel().getColumn(3).setCellEditor(new javax.swing.DefaultCellEditor(new JTextField()) {
             /**
 			 * 
@@ -167,58 +167,70 @@ public class ScreenGCategorias extends JFrame {
 			                cargarDatosTabla(modeloTabla); // Volver a cargar los datos.
 			            });
 			        } catch (Exception ex) {
-			            JOptionPane.showMessageDialog(null, "Error al recuperar el producto: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			            JOptionPane.showMessageDialog(null, "Error al recuperar la categoría: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			        }
 			    });
 
 			    return botonEditar; // Devolver el botón como componente del editor.
 			}
         });
-
-     // Renderizador y editor para el botón "Eliminar".
+        
+     // Configuración del renderizador para la columna "Eliminar"
         tablaCategorias.getColumnModel().getColumn(4).setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
             JButton botonEliminar = new JButton("Eliminar");
             botonEliminar.setBackground(Color.RED);
             botonEliminar.setForeground(Color.WHITE);
+            botonEliminar.setFocusPainted(false); // Elimina el borde de selección
             return botonEliminar;
         });
 
+        // Configuración del editor para la columna "Eliminar"
         tablaCategorias.getColumnModel().getColumn(4).setCellEditor(new javax.swing.DefaultCellEditor(new JTextField()) {
-            /**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
+            private static final long serialVersionUID = 1L;
 
-			@Override
+            @Override
             public java.awt.Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
                 JButton botonEliminar = new JButton("Eliminar");
                 botonEliminar.setBackground(Color.RED);
                 botonEliminar.setForeground(Color.WHITE);
 
+                // Acción al hacer clic en el botón
                 botonEliminar.addActionListener(e -> {
-                    int idCategoria = Integer.parseInt(table.getValueAt(row, 0).toString()); // Obtiene el ID del usuario.
-                    int confirmacion = JOptionPane.showConfirmDialog(
-                        null,
-                        "¿Estás seguro de que deseas eliminar esta categoria?",
-                        "Confirmar eliminación",
-                        JOptionPane.YES_NO_OPTION
-                    );
-
-                    if (confirmacion == JOptionPane.YES_OPTION) {
-                        try {
-                            categoria.eliminarCategoria(idCategoria); // Llama al método para eliminar el usuario.
-                            JOptionPane.showMessageDialog(null, "Categoria eliminada correctamente.");
-                            
-                            // Recargar la tabla con los datos actualizados.
-                            DefaultTableModel modeloTabla = (DefaultTableModel) tablaCategorias.getModel();
-                            modeloTabla.setRowCount(0); // Limpia la tabla.
-                            cargarDatosTabla(modeloTabla); // Carga los datos actualizados.
-                        } catch (Exception ex) {
-                            JOptionPane.showMessageDialog(null, "Error al eliminar la categoria: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    try {
+                        // Detener la edición activa antes de modificar el modelo de la tabla
+                        if (tablaCategorias.isEditing()) {
+                        	tablaCategorias.getCellEditor().stopCellEditing();
                         }
+
+                        // Verificar que la fila aún existe
+                        if (row >= 0 && row < table.getRowCount()) {
+                            int idCategoria = Integer.parseInt(table.getValueAt(row, 0).toString()); // ID del producto
+                            int confirmacion = JOptionPane.showConfirmDialog(
+                                null,
+                                "¿Estás seguro de que deseas eliminar esta categoría?",
+                                "Confirmar eliminación",
+                                JOptionPane.YES_NO_OPTION
+                            );
+
+                            if (confirmacion == JOptionPane.YES_OPTION) {
+                                // Eliminar el producto del backend
+                                categoria.eliminarCategoria(idCategoria);
+                                JOptionPane.showMessageDialog(null, "Categoría eliminada correctamente.");
+
+                                // Recargar la tabla con datos actualizados
+                                DefaultTableModel modeloTabla = (DefaultTableModel) table.getModel();
+                                modeloTabla.setRowCount(0); // Limpia las filas actuales
+                                cargarDatosTabla(modeloTabla); // Recarga las filas desde el backend
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Fila no válida para eliminar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                        }
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, "Error al eliminar la categoría: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 });
 
+                // Devolver el botón como componente del editor
                 return botonEliminar;
             }
         });
@@ -267,6 +279,7 @@ public class ScreenGCategorias extends JFrame {
     private void cargarDatosTabla(DefaultTableModel modeloTabla) {
         try {
             List<Categoria> categorias = categoria.listarCategorias(); // Obtener la lista de categorias.
+            modeloTabla.setRowCount(0); // Limpia todas las filas antes de agregar nuevas
             for (Categoria categoria : categorias) {
                 modeloTabla.addRow(new Object[]{
                     String.valueOf(categoria.getIdCategoria()), // Convertir el ID a String.

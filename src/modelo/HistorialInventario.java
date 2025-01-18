@@ -2,9 +2,8 @@ package modelo;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
-
-import com.google.gson.Gson;
 
 import DAO.DaoHistorialInventario;
 
@@ -21,6 +20,7 @@ public class HistorialInventario {
 	
 	private int idHistorial;
 	private int idProducto;
+	private int idUsuario;
 	private int cantidad;
 	private String tipoMovimiento;
 	private Timestamp fecha;
@@ -41,10 +41,11 @@ public class HistorialInventario {
 	 * @param tipoMovimiento Tipo de movimiento de stock: Entrada o Salida.
 	 * @param fecha Fecha del movimiento.
 	 */
-	public HistorialInventario(int idHistorial, int idProducto, int cantidad, String tipoMovimiento, Timestamp fecha) {
+	public HistorialInventario(int idHistorial, int idProducto, int idUsuario, int cantidad, String tipoMovimiento, Timestamp fecha) {
 		super();
 		this.idHistorial = idHistorial;
 		this.idProducto = idProducto;
+		this.idUsuario = idUsuario;
 		this.cantidad = cantidad;
 		this.tipoMovimiento = tipoMovimiento;
 		this.fecha = fecha;
@@ -57,8 +58,9 @@ public class HistorialInventario {
 	 * @param tipoMovimiento Tipo de movimiento de stock: Entrada o Salida.
 	 * @param fecha Fecha del movimiento.
 	 */
-	public HistorialInventario(int idProducto, int cantidad, String tipoMovimiento) {
+	public HistorialInventario(int idProducto, int idUsuario, int cantidad, String tipoMovimiento) {
         this.idProducto = idProducto;
+        this.idUsuario = idUsuario;
         this.cantidad = cantidad;
         this.tipoMovimiento = tipoMovimiento;
         this.fecha = new Timestamp(System.currentTimeMillis());
@@ -97,6 +99,22 @@ public class HistorialInventario {
 	 */
 	public void setIdProducto(int idProducto) {
 		this.idProducto = idProducto;
+	}
+	
+	/**
+	 * Obtiene el identificador del usuario.
+	 * @return idUsuario Identificador del usuario.
+	 */
+	public int getIdUsuario() {
+		return idUsuario;
+	}
+
+	/**
+	 * Establece el identificador del usuario.
+	 * @param idProducto Identificador del usuario.
+	 */
+	public void setIdUsuario(int idUsuario) {
+		this.idUsuario = idUsuario;
 	}
 
 	/**
@@ -146,21 +164,12 @@ public class HistorialInventario {
 	public void setFecha(Timestamp fecha) {
 		this.fecha = fecha;
 	}
-
-	/**
-	 * Calcula el codigo hash del objeto HistorialInventario.
-	 * @return int Codigo hash del objeto HistorialInventario.
-	 */
+	
 	@Override
 	public int hashCode() {
-		return Objects.hash(cantidad, fecha, idHistorial, idProducto, tipoMovimiento);
+		return Objects.hash(cantidad, fecha, idHistorial, idProducto, idUsuario, tipoMovimiento);
 	}
 
-	/**
-	 * Compara dos objetos HistorialInventario para verificar si son iguales.
-	 * @param obj Objeto con el cual se va a comparar.
-	 * @return true si los objetos son iguales, false de lo contrario.
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -171,27 +180,31 @@ public class HistorialInventario {
 			return false;
 		HistorialInventario other = (HistorialInventario) obj;
 		return cantidad == other.cantidad && Objects.equals(fecha, other.fecha) && idHistorial == other.idHistorial
-				&& idProducto == other.idProducto && Objects.equals(tipoMovimiento, other.tipoMovimiento);
+				&& idProducto == other.idProducto && idUsuario == other.idUsuario
+				&& Objects.equals(tipoMovimiento, other.tipoMovimiento);
 	}
+	
 
-	/**
-	 * Devuelve una representacion en forma de cadena del objeto HistorialInventario.
-	 * @return String Representacion en cadena del objeto HistorialInventario.
-	 */
 	@Override
 	public String toString() {
-		return "HistorialInventario [idHistorial=" + idHistorial + ", idProducto=" + idProducto + ", cantidad="
-				+ cantidad + ", tipoMovimiento=" + tipoMovimiento + ", fecha=" + fecha + "]";
+		return "HistorialInventario [idHistorial=" + idHistorial + ", idProducto=" + idProducto + ", idUsuario="
+				+ idUsuario + ", cantidad=" + cantidad + ", tipoMovimiento=" + tipoMovimiento + ", fecha=" + fecha
+				+ "]";
 	}
-	
+
 	public void insertarMovimiento() throws SQLException {
 		DaoHistorialInventario dao = new DaoHistorialInventario();
-		dao.insertarMov(this);
+		try {
+			dao.registrarMovimiento(this);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	public String listarMovimientos() throws SQLException {
-		DaoHistorialInventario dao = new DaoHistorialInventario();
-		return new Gson().toJson(dao.listarMov());
+	public List<HistorialInventario> listarMovimientos() throws SQLException {
+		DaoHistorialInventario daoInventario = new DaoHistorialInventario();
+		return daoInventario.listarMov();
 	}
 
 } // Class

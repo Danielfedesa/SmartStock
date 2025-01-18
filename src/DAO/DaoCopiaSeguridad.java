@@ -2,9 +2,12 @@ package DAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import controlador.ConexionDB;
+import modelo.CopiaSeguridad;
 
 /**
  * Clase para realizar operaciones relacionadas con
@@ -41,17 +44,39 @@ public class DaoCopiaSeguridad {
      */
 	public void registrarBackup(String rutaBackup) throws SQLException {
 		
-		String sql = "INSERT INTO copiasseguridad (fecha_Backup, ruta_Archivo) VALUES (?)";
+		String sql = "INSERT INTO copiasseguridad (fecha_Backup, ruta_Archivo) VALUES (CURRENT_TIMESTAMP, ?)";
 		
 		PreparedStatement ps = con.prepareStatement(sql);
 		
 		ps.setString(1, rutaBackup);
-		ps.setString(2, rutaBackup);
 		
 		@SuppressWarnings("unused")
 		int filas = ps.executeUpdate();
 		
 		ps.close();
+	}
+
+	public ArrayList<CopiaSeguridad> listar() throws SQLException {
+		
+		String sql = "SELECT * FROM copiasseguridad";
+		
+		PreparedStatement ps = con.prepareStatement(sql);
+		
+		ResultSet rs = ps.executeQuery();
+		
+		ArrayList<CopiaSeguridad> result = null;
+		
+		while (rs.next()) {
+			if (result == null) {
+				result = new ArrayList<CopiaSeguridad>();
+			}
+			
+			result.add(new CopiaSeguridad(rs.getInt(1), rs.getTimestamp(2), rs.getString(3)));			
+		}
+		
+		ps.close();
+		
+		return result;
 	}
 	
 } // Class

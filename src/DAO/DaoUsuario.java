@@ -39,9 +39,9 @@ public class DaoUsuario {
 	}
 	
 	// MIRAR ESTE MÉTODO Y VER SI EL ANTERIOR ME HACE FALTA PARA INICIAR SESION
-	public String validarCredenciales(String email, String contrasena) throws Exception {
+	public Usuario validarCredenciales(String email, String contrasena) throws Exception {
 		
-		String sql = "SELECT rol FROM usuarios WHERE email = ? AND contrasena = ?";
+		String sql = "SELECT rol, id_Usuario FROM usuarios WHERE email = ? AND contrasena = ?";
 		
         try (PreparedStatement ps = con.prepareStatement(sql)) {
         	
@@ -50,7 +50,11 @@ public class DaoUsuario {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                	return rs.getString("rol"); // Devuelve el rol si las credenciales son correctas.
+                	Usuario usuario = new Usuario();
+                	usuario.setIdUsuario(rs.getInt("id_Usuario"));
+                    usuario.setRol(rs.getString("rol"));
+                    return usuario; // Devuelve el objeto Usuario si las credenciales son correctas.
+                	
                 }
             }
         }

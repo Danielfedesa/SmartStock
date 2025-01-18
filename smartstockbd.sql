@@ -33,10 +33,12 @@ CREATE TABLE Productos (
 CREATE TABLE HistorialInventario (
     id_Historial INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     id_Producto INT NOT NULL,
-	cantidad INT NOT NULL,
+    id_Usuario INT NOT NULL,
+    cantidad INT NOT NULL,
     tipo_Movimiento ENUM('entrada', 'salida') NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_Producto) REFERENCES Productos(id_Producto)
+    FOREIGN KEY (id_Producto) REFERENCES Productos(id_Producto),
+    FOREIGN KEY (id_Usuario) REFERENCES Usuarios(id_Usuario)
 );
 
 CREATE TABLE CopiasSeguridad (
@@ -87,19 +89,19 @@ VALUES
 ('Botines de Media Caña Marrones', 'Botines cómodos de media caña para el día a día', 69.99, 25, 16)
 ;
 
-INSERT INTO HistorialInventario (id_Producto, cantidad, tipo_Movimiento)
+INSERT INTO HistorialInventario (id_Producto, id_Usuario, cantidad, tipo_Movimiento)
 VALUES
-(1, 20, 'entrada'),
-(2, 5, 'salida'),
-(3, 15, 'entrada'),
-(4, 10, 'entrada'),
-(5, 2, 'salida'),
-(6, 12, 'entrada'),
-(7, 8, 'entrada'),
-(8, 3, 'salida'),
-(1, 5, 'salida'),
-(2, 10, 'entrada'),
-(6, 7, 'salida')
+(1, 1, 20, 'entrada'),
+(2, 2, 5, 'salida'),
+(3, 3, 15, 'entrada'),
+(4, 2, 10, 'entrada'),
+(5, 2, 2, 'salida'),
+(6, 2, 12, 'entrada'),
+(7, 1, 8, 'entrada'),
+(8, 1, 3, 'salida'),
+(1, 1, 5, 'salida'),
+(2, 2, 10, 'entrada'),
+(6, 1, 7, 'salida')
 ;
 
 INSERT INTO CopiasSeguridad (ruta_Archivo)

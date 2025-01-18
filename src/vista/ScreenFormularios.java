@@ -1,5 +1,6 @@
 package vista;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -7,6 +8,7 @@ import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -15,7 +17,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import controlador.UsuarioSesion;
 import modelo.Categoria;
+import modelo.HistorialInventario;
 import modelo.Producto;
 import modelo.Usuario;
 
@@ -583,7 +587,7 @@ public class ScreenFormularios {
                 	categoriaEditar.setDescripcion(descripcionField.getText());
 
                     categoriaEditar.actualizarCategoria(); // Actualiza en la base de datos.
-                    JOptionPane.showMessageDialog(formularioEdicion, "Usuario actualizado correctamente.");
+                    JOptionPane.showMessageDialog(formularioEdicion, "Categoría actualizada correctamente.");
                     formularioEdicion.dispose();
 
                     // Llamada al callback para actualizar la tabla.
@@ -592,7 +596,7 @@ public class ScreenFormularios {
                     }
 
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(formularioEdicion, "Error al actualizar el usuario: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(formularioEdicion, "Error al actualizar la categoría: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
 
@@ -677,6 +681,186 @@ public class ScreenFormularios {
 
         formularioInsertar.add(panelFormulario);
         formularioInsertar.setVisible(true);
+    }
+
+    public void abrirFormularioMovimiento(Producto productoEditar, Runnable onUpdateCallback) {
+        JFrame formularioEdicion = new JFrame("Movimiento de Producto");
+        formularioEdicion.setSize(400, 600);
+        formularioEdicion.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        formularioEdicion.setLocationRelativeTo(null);
+
+        JPanel panelFormulario = new JPanel(new GridBagLayout());
+        panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Configuración de tamaño estándar para los campos.
+        Dimension campoTamanio = new Dimension(200, 25);
+
+        // Campo "Nombre".
+        JLabel nombreLabel = new JLabel("Nombre:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panelFormulario.add(nombreLabel, gbc);
+
+        JTextField nombreField = new JTextField(productoEditar.getNombreProducto());
+        nombreField.setPreferredSize(campoTamanio);
+        nombreField.setEditable(false); // Campo no editable
+        nombreField.setBorder(BorderFactory.createLineBorder(Color.black));
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        panelFormulario.add(nombreField, gbc);
+
+        // Campo "Descripción".
+        JLabel descripcionLabel = new JLabel("Descripción:");
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panelFormulario.add(descripcionLabel, gbc);
+
+        JTextArea descripcionField = new JTextArea(productoEditar.getDescripcion());
+        descripcionField.setLineWrap(true);
+        descripcionField.setWrapStyleWord(true);
+        descripcionField.setEditable(false); // Campo no editable
+        descripcionField.setBackground(panelFormulario.getBackground());
+        JScrollPane scrollDescripcion = new JScrollPane(descripcionField);
+        scrollDescripcion.setBorder(BorderFactory.createLineBorder(Color.black)); // Borde opcional
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.gridheight = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        panelFormulario.add(scrollDescripcion, gbc);
+
+        // Restablecer gridheight y fill.
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Campo "Stock".
+        JLabel stockLabel = new JLabel("Stock:");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panelFormulario.add(stockLabel, gbc);
+
+        JTextField stockField = new JTextField(String.valueOf(productoEditar.getStock()));
+        stockField.setPreferredSize(campoTamanio);
+        stockField.setEditable(false); // Campo no editable
+        stockField.setBorder(BorderFactory.createLineBorder(Color.black));
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        panelFormulario.add(stockField, gbc);
+
+        // Campo "Stock mínimo".
+        JLabel stockMinLabel = new JLabel("Stock mínimo:");
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        panelFormulario.add(stockMinLabel, gbc);
+
+        JTextField stockMinField = new JTextField(String.valueOf(productoEditar.getStockMinimo()));
+        stockMinField.setPreferredSize(campoTamanio);
+        stockMinField.setEditable(false); // Campo no editable
+        stockMinField.setBorder(BorderFactory.createLineBorder(Color.black));
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        panelFormulario.add(stockMinField, gbc);
+
+        // Campo "Tipo de movimiento".
+        JLabel tipoMovimientoLabel = new JLabel("Tipo:");
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        panelFormulario.add(tipoMovimientoLabel, gbc);
+
+        String[] opcionesMovimiento = {"","Entrada", "Salida"};
+        JComboBox<String> tipoMovimientoCombo = new JComboBox<>(opcionesMovimiento);
+        gbc.gridx = 1;
+        gbc.gridy = 5;
+        panelFormulario.add(tipoMovimientoCombo, gbc);
+
+        // Campo "Cantidad".
+        JLabel cantidadLabel = new JLabel("Cantidad:");
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        panelFormulario.add(cantidadLabel, gbc);
+
+        JTextField cantidadField = new JTextField();
+        cantidadField.setPreferredSize(campoTamanio);
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        panelFormulario.add(cantidadField, gbc);
+
+        // Botón "Aplicar Movimiento".
+        JButton aplicarMovimiento = new JButton("Aplicar Movimiento");
+        aplicarMovimiento.addActionListener(e -> {
+            try {
+                String tipoMovimiento = (String) tipoMovimientoCombo.getSelectedItem();
+
+                // Validar si se seleccionó un tipo de movimiento válido.
+                if (tipoMovimiento == null || tipoMovimiento.isBlank()) {
+                    JOptionPane.showMessageDialog(formularioEdicion, "Debes indicar un tipo de movimiento válido.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Validar si la cantidad es un número válido.
+                int cantidad;
+                try {
+                    cantidad = Integer.parseInt(cantidadField.getText());
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(formularioEdicion, "Cantidad inválida. Por favor, introduzca un número.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Validar salida con stock suficiente.
+                if (tipoMovimiento.equals("Salida") && cantidad > productoEditar.getStock()) {
+                    JOptionPane.showMessageDialog(formularioEdicion, "No hay suficiente stock para esta salida.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Ajustar el stock del producto según el movimiento.
+                if (tipoMovimiento.equals("Entrada")) {
+                    productoEditar.setStock(productoEditar.getStock() + cantidad);
+                } else if (tipoMovimiento.equals("Salida")) {
+                    productoEditar.setStock(productoEditar.getStock() - cantidad);
+                }
+
+                // Actualizar el producto en la base de datos.
+                productoEditar.actualizarProducto();
+
+                // Registrar el movimiento en la tabla historialinventario.
+                HistorialInventario historial = new HistorialInventario();
+                historial.setIdProducto(productoEditar.getIdProducto());
+                historial.setIdUsuario(UsuarioSesion.getIdUsuarioActual());
+                historial.setCantidad(cantidad);
+                historial.setTipoMovimiento(tipoMovimiento);
+
+                // Llamar al método insertarMovimiento.
+                historial.insertarMovimiento();
+
+                // Mostrar mensaje de éxito y cerrar el formulario.
+                JOptionPane.showMessageDialog(formularioEdicion, "Movimiento aplicado correctamente.");
+                formularioEdicion.dispose();
+
+                // Ejecutar el callback para actualizar la tabla.
+                if (onUpdateCallback != null) {
+                    onUpdateCallback.run();
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(formularioEdicion, "Error al aplicar el movimiento: " + ex.getMessage(),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        panelFormulario.add(aplicarMovimiento, gbc);
+
+        formularioEdicion.add(panelFormulario);
+        formularioEdicion.setVisible(true);
     }
     
 } // Class

@@ -48,7 +48,7 @@ public class Login {
 	 * @param contrasena La contrasena del usuario que intenta iniciar sesion.
 	 * @return Un objeto {@link Usuario} si las credenciales son validas, o {@code null} si no lo son.
 	 */
-	public String iniciarSesion(String email, String contrasena) {
+	public Usuario iniciarSesion(String email, String contrasena) {
         try {
             return usuarioDao.validarCredenciales(email, contrasena);
         } catch (Exception e) {

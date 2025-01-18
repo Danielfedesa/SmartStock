@@ -43,6 +43,7 @@ public class DaoHistorialInventario {
 	 * @return ID del movimiento insertado.
 	 * @throws SQLException Si hay un error de insercion en base de datos.
 	 */
+	/*
 	public void insertarMov(HistorialInventario m) throws SQLException {
 		
 		String sql = "INSERT INTO historialinventario (id_Producto, cantidad, tipo_Movimiento, fecha) VALUES (?, ?, ?, ?)";
@@ -58,6 +59,21 @@ public class DaoHistorialInventario {
 		int filas = ps.executeUpdate();
 		
 		ps.close();
+	}
+	
+	*/
+	
+	public void registrarMovimiento(HistorialInventario historial) throws Exception {
+	    String sql = "INSERT INTO historialinventario (id_Producto, id_Usuario, cantidad, tipo_Movimiento) VALUES (?, ?, ?, ?)";
+
+	    try (PreparedStatement ps = con.prepareStatement(sql)) {
+	        ps.setInt(1, historial.getIdProducto());
+	        ps.setInt(2, historial.getIdUsuario());
+	        ps.setInt(3, historial.getCantidad());
+	        ps.setString(4, historial.getTipoMovimiento());
+
+	        ps.executeUpdate();
+	    }
 	}
 	
 	/**
@@ -80,8 +96,8 @@ public class DaoHistorialInventario {
 				result = new ArrayList<HistorialInventario>();
 			}
 			
-			result.add(new HistorialInventario(rs.getInt(1), rs.getInt(2), rs.getInt(3), 
-					rs.getString(4), rs.getTimestamp(5)));
+			result.add(new HistorialInventario(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), 
+					rs.getString(5), rs.getTimestamp(6)));
 		}
 		
 		ps.close();

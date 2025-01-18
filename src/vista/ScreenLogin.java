@@ -20,35 +20,35 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import Procesos.BackupAutomatico;
+import Procesos.SupervisorStock;
 import controlador.Login;
+import controlador.UsuarioSesion;
+import modelo.Usuario;
 
 public class ScreenLogin extends JFrame {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	
-	public ScreenLogin(Login loginControlador) {	
-		setTitle("SmartStock - Inicio de sesión");
-		setSize(600, 400);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
-		setMinimumSize(new Dimension(800, 600));
-		
-		// Estilos
-		Color fondoColor = new Color(240, 240, 240);
-		Color botonColor = new Color(70, 130, 180);
-		Color textoBotonColor = Color.white;
-		Font fuenteTitulo = new Font("Arial", Font.BOLD, 24);
-		Font fuenteSubtitulo = new Font("Arial", Font.BOLD, 16);
-		Font fuenteTextos = new Font("Arial", Font.PLAIN, 16);
-		
-		// Configuración del fondo
-		getContentPane().setBackground(fondoColor);
-		
-		// Panel principal
+
+    private static final long serialVersionUID = 1L;
+
+    public ScreenLogin(Login loginControlador) {
+        setTitle("SmartStock - Inicio de sesión");
+        setSize(600, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setMinimumSize(new Dimension(800, 600));
+
+        // Estilos
+        Color fondoColor = new Color(240, 240, 240);
+        Color botonColor = new Color(70, 130, 180);
+        Color textoBotonColor = Color.white;
+        Font fuenteTitulo = new Font("Arial", Font.BOLD, 24);
+        Font fuenteSubtitulo = new Font("Arial", Font.BOLD, 16);
+        Font fuenteTextos = new Font("Arial", Font.PLAIN, 16);
+
+        // Configuración del fondo
+        getContentPane().setBackground(fondoColor);
+
+        // Panel principal
         JPanel contenedor = new JPanel(new GridBagLayout());
         contenedor.setBackground(fondoColor);
 
@@ -58,131 +58,139 @@ public class ScreenLogin extends JFrame {
         panelFormulario.setBackground(fondoColor);
         panelFormulario.setLayout(new GridBagLayout());
         panelFormulario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-	     
-	     // Componentes
-	     JLabel tituloLabel = new JLabel("Bienvenido a SmartStock", SwingConstants.CENTER);
-	     tituloLabel.setFont(fuenteTitulo);
-	     tituloLabel.setForeground(Color.DARK_GRAY);
-	     
-	     JLabel subtituloLabel = new JLabel("Introduzca sus credenciales para acceder al sistema.", SwingConstants.CENTER);
-	     subtituloLabel.setFont(fuenteSubtitulo);
-	     subtituloLabel.setForeground(Color.DARK_GRAY);
-	     
-	     JTextField usuario = new JTextField();
-	     usuario.setBorder(BorderFactory.createTitledBorder("Correo electrónico"));
-	     usuario.setFont(fuenteTextos);
-	     
-	     JPasswordField contrasena = new JPasswordField();
-	     contrasena.setBorder(BorderFactory.createTitledBorder("Contraseña"));
-	     contrasena.setFont(fuenteTextos);
-	     
-	     JButton enviar = new JButton("Iniciar sesión");
-	     enviar.setFont(fuenteTextos);
-	     enviar.setBackground(botonColor);
-	     enviar.setForeground(textoBotonColor);
-	     enviar.setFocusPainted(false);
-	     enviar.setBorder(BorderFactory.createCompoundBorder(
-	    		 BorderFactory.createLineBorder(botonColor.darker(), 1),
-	    		 BorderFactory.createEmptyBorder(5, 15, 5, 15)
-	    		 ));
-	     
-	     // Hover para el boton
-	     enviar.addMouseListener(new java.awt.event.MouseAdapter() {
-	            @Override
-	            public void mouseEntered(java.awt.event.MouseEvent evt) {
-	                enviar.setBackground(botonColor.brighter());
-	            }
 
-	            @Override
-	            public void mouseExited(java.awt.event.MouseEvent evt) {
-	                enviar.setBackground(botonColor);
-	            }
-	        });
-	     
-	     // Acciones de los botones
-	     enviar.addActionListener(new ActionListener() {
-	
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				String email = usuario.getText();
-				String pass = new String(contrasena.getPassword());
-				
-				if (email.isEmpty() || pass.isEmpty()) {
-	                JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
-	                return;
-				}
-				
-				try {
-					String rol = loginControlador.iniciarSesion(email, pass);
-					
-					if (rol != null) {
-						JOptionPane.showMessageDialog(null, "Se inicio de sesión en el sistema. \nBienvenido.");
-						dispose(); // Cierra la ventana de inicio de sesion
-						
-						
-						// Redirige en función del rol.
-						if (rol.equals("admin")) {
-							new ScreenDashboardAdmin().setVisible(true);
-						} else if (rol.equals("empleado")) {
-							new ScreenDashboard().setVisible(true);
-						}
-						
-						
-					} else {
-						JOptionPane.showMessageDialog(null,  "Correo o contraseña incorrectos.", "Error", JOptionPane.ERROR_MESSAGE);
-					}
-				} catch (Exception ex){
-					JOptionPane.showMessageDialog(null, "Error al intentar iniciar sesión: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-					ex.printStackTrace();
-				}
-				
-			}
-	    	 
-	     });
-	     
-	     	//Añadir componentes al panel del formulario
-	        GridBagConstraints gbc = new GridBagConstraints();
-	        gbc.insets = new Insets(10, 10, 10, 10); // Margen entre componentes
-	        gbc.fill = GridBagConstraints.HORIZONTAL;
-	        gbc.gridx = 0;
-	        
-	        gbc.gridy = 0;
-	        panelFormulario.add(tituloLabel, gbc);
-	        
-	        gbc.gridy++;
-	        panelFormulario.add(subtituloLabel, gbc);
+        // Componentes
+        JLabel tituloLabel = new JLabel("Bienvenido a SmartStock", SwingConstants.CENTER);
+        tituloLabel.setFont(fuenteTitulo);
+        tituloLabel.setForeground(Color.DARK_GRAY);
 
-	        gbc.gridy++;
-	        panelFormulario.add(usuario, gbc);
+        JLabel subtituloLabel = new JLabel("Introduzca sus credenciales para acceder al sistema.",
+                SwingConstants.CENTER);
+        subtituloLabel.setFont(fuenteSubtitulo);
+        subtituloLabel.setForeground(Color.DARK_GRAY);
 
-	        gbc.gridy++;
-	        panelFormulario.add(contrasena, gbc);
+        JTextField usuarioField = new JTextField();
+        usuarioField.setBorder(BorderFactory.createTitledBorder("Correo electrónico"));
+        usuarioField.setFont(fuenteTextos);
 
-	        gbc.gridy++;
-	        panelFormulario.add(enviar, gbc);
+        JPasswordField contrasenaField = new JPasswordField();
+        contrasenaField.setBorder(BorderFactory.createTitledBorder("Contraseña"));
+        contrasenaField.setFont(fuenteTextos);
 
-	        // Añadir el formulario al contenedor principal (centrado)
-	        contenedor.add(panelFormulario);
+        JButton enviar = new JButton("Iniciar sesión");
+        enviar.setFont(fuenteTextos);
+        enviar.setBackground(botonColor);
+        enviar.setForeground(textoBotonColor);
+        enviar.setFocusPainted(false);
+        enviar.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(botonColor.darker(), 1),
+                BorderFactory.createEmptyBorder(5, 15, 5, 15)));
 
-	        // Añadir el contenedor a la ventana
-	        add(contenedor);
-	    }
-	
-		
-		public static void main(String[] args) {
-		    SwingUtilities.invokeLater(() -> {
-		        try {
-		            // Crea el modelo Login (el DAO se inicializa dentro de Login)
-		            Login loginControlador = new Login();
-	
-		            // Crea y muestra la pantalla de inicio de sesión
-		            new ScreenLogin(loginControlador).setVisible(true);
-		        } catch (Exception e) {
-		            System.err.println("Error al inicializar la aplicación: " + e.getMessage());
-		            e.printStackTrace();
-		        }
-		    });
-        
-    } // Main
-} // Class
+        // Hover para el botón
+        enviar.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                enviar.setBackground(botonColor.brighter());
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                enviar.setBackground(botonColor);
+            }
+        });
+
+        // Acción del botón "Iniciar sesión"
+        enviar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String email = usuarioField.getText();
+                String pass = new String(contrasenaField.getPassword());
+
+                if (email.isEmpty() || pass.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos.", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                try {
+                    // Intenta iniciar sesión y recupera el usuario.
+                    Usuario usuarioLogueado = loginControlador.iniciarSesion(email, pass);
+
+                    if (usuarioLogueado != null) {
+                        UsuarioSesion.setUsuarioActual(usuarioLogueado); // Guardar el usuario en sesión.
+                        JOptionPane.showMessageDialog(null, "Inicio de sesión correcto.\nBienvenido.");
+                        dispose(); // Cierra la ventana de inicio de sesión.
+
+                        // Redirige según el rol del usuario.
+                        if ("admin".equals(usuarioLogueado.getRol())) {
+                            new ScreenDashboardAdmin().setVisible(true);
+                        } else if ("empleado".equals(usuarioLogueado.getRol())) {
+                            new ScreenDashboard().setVisible(true);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Correo o contraseña incorrectos.", "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Error al intentar iniciar sesión: " + ex.getMessage(), "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        // Añadir componentes al panel del formulario
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Margen entre componentes
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+
+        gbc.gridy = 0;
+        panelFormulario.add(tituloLabel, gbc);
+
+        gbc.gridy++;
+        panelFormulario.add(subtituloLabel, gbc);
+
+        gbc.gridy++;
+        panelFormulario.add(usuarioField, gbc);
+
+        gbc.gridy++;
+        panelFormulario.add(contrasenaField, gbc);
+
+        gbc.gridy++;
+        panelFormulario.add(enviar, gbc);
+
+        // Añadir el formulario al contenedor principal (centrado)
+        contenedor.add(panelFormulario);
+
+        // Añadir el contenedor a la ventana
+        add(contenedor);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                // Crea el modelo Login (el DAO se inicializa dentro de Login)
+                Login loginControlador = new Login();
+
+                // Crea y muestra la pantalla de inicio de sesión
+                new ScreenLogin(loginControlador).setVisible(true);
+            } catch (Exception e) {
+                System.err.println("Error al inicializar la aplicación: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+
+        // Crear y ejecutar el hilo de copias automáticas
+        Thread backupThread = new Thread(new BackupAutomatico());
+        backupThread.start();
+
+        System.out.println("Hilo de copia de seguridad INICIADO.");
+
+        // Crear y ejecutar el hilo de supervisión de stock.
+        Thread superThread = new Thread(new SupervisorStock());
+        superThread.start();
+
+        System.out.println("Hilo de supervisión de stock bajo INICIADO");
+    }
+}

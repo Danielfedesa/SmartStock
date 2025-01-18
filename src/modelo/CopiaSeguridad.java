@@ -1,7 +1,13 @@
 package modelo;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import DAO.DaoCopiaSeguridad;
@@ -76,27 +82,46 @@ public class CopiaSeguridad {
 	 */
 	public void realizarBackup() throws SQLException {
 		
+		// Formatear la fecha y hora actual para incluirla en el nombre del archivo
+	    SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy_HH.mm");
+	    String fechaHora = formatter.format(new Date());
+		
 		// Ruta y nombre
-		String rutaBackup = "/backups/smartstock_backup_" + System.currentTimeMillis() + ".sql";
+		String rutaBackup = "C:\\Users\\Daniel\\Desktop\\SmartStock\\SmartStock_Backups\\SmartStock_" + fechaHora + ".sql";
+		String comando = "cmd /c \"C:\\xampp\\mysql\\bin\\mysqldump.exe -u Daniel -p1234 smartstockdb > " + rutaBackup + "\"";		
 		
 		try {
-			// Ejecuta comando para realizar la copia. (mysqldump genera la copia)
-			Process proceso = Runtime.getRuntime().exec("mysqldump -u Daniel -p 1234 smartstockbd > " + rutaBackup);
-			
-			int resultado = proceso.waitFor(); // Espera a que termine el proceso.
-					
-			if (resultado == 0) {
-				System.out.println("Copia de seguridad creada correctamente en la ruta: " + rutaBackup);
-				
-				// Registra la copia de seguridad en la base de datos.
-				DaoCopiaSeguridad daoCopia = new DaoCopiaSeguridad();
-				daoCopia.registrarBackup(rutaBackup);
-			} else {
-				System.err.println("Error al registrar la copia de seguridad en la base de datos.");
-			}
-		} catch (Exception e) {
-			throw new SQLException("Error al realizar la copia de seguridad: " + e.getMessage());
-		}
+	        // Ejecuta el comando para realizar la copia
+	        Process proceso = Runtime.getRuntime().exec(new String[]{"cmd", "/c", comando});
+
+	        // Capturar errores del comando
+	        InputStream errorStream = proceso.getErrorStream();
+	        InputStreamReader isr = new InputStreamReader(errorStream);
+	        BufferedReader br = new BufferedReader(isr);
+	        String linea;
+	        while ((linea = br.readLine()) != null) {
+	            System.err.println("Error mysqldump: " + linea);
+	        }
+
+	        int resultado = proceso.waitFor(); // Espera a que termine el proceso
+
+	        if (resultado == 0) {
+	            System.out.println("Copia de seguridad creada correctamente en la ruta: " + rutaBackup);
+
+	            // Registra la copia de seguridad en la base de datos
+	            DaoCopiaSeguridad daoCopia = new DaoCopiaSeguridad();
+	            daoCopia.registrarBackup(rutaBackup);
+	        } else {
+	            System.err.println("Error al ejecutar el comando mysqldump. Código de salida: " + resultado);
+	        }
+	    } catch (Exception e) {
+	        throw new SQLException("Error al realizar la copia de seguridad: " + e.getMessage());
+	    }
 	} // Cierre del metodo.
+	
+	public List<CopiaSeguridad> listarCopias() throws SQLException {
+		DaoCopiaSeguridad daoCopia = new DaoCopiaSeguridad();
+		return daoCopia.listar();
+	}
 	
 } // Class
