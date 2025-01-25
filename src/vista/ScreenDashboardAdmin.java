@@ -120,6 +120,9 @@ public class ScreenDashboardAdmin extends JFrame {
 
         JButton copiasSeguridad = new JButton("Copias de Seguridad");
         configBoton(copiasSeguridad, botonColor, textoBotonColor, fuenteBotones);
+        
+        JButton alertasStock = new JButton("Alertas de stock");
+        configBoton(alertasStock, botonColor, textoBotonColor, fuenteBotones);
 
         // Acciones de los botones
         gUsuarios.addActionListener(e -> abrirGestionUsuarios());
@@ -128,6 +131,7 @@ public class ScreenDashboardAdmin extends JFrame {
         inventario.addActionListener(e -> abrirInventario());
         movInventario.addActionListener(e -> abrirMovInventario());
         copiasSeguridad.addActionListener(e -> abrirCopiasSeguridad());
+        alertasStock.addActionListener(e -> abrirAlertasStock());
 
         // Añadir componentes al panel del menú
         gbc.gridy = 1; // Comienza después del panel superior
@@ -154,6 +158,9 @@ public class ScreenDashboardAdmin extends JFrame {
 
         gbc.gridy++;
         panelMenu.add(copiasSeguridad, gbc);
+        
+        gbc.gridy++;
+        panelMenu.add(alertasStock, gbc);
 
         // Añadir el panel del menú al contenedor principal
         gbc.gridy = 1;
@@ -218,6 +225,12 @@ public class ScreenDashboardAdmin extends JFrame {
     private void abrirMovInventario() {
         HistorialInventario his = new HistorialInventario();
         new ScreenGHistorialInventario(his).setVisible(true);
+        this.dispose();
+    }
+    
+    private void abrirAlertasStock() {
+        Producto pro = new Producto();
+        new ScreenAlertasStock(pro).setVisible(true);
         this.dispose();
     }
 

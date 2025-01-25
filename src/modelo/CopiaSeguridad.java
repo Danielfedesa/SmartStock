@@ -144,7 +144,7 @@ public class CopiaSeguridad {
 		
 		// Ruta y nombre
 		String rutaBackup = "C:\\Users\\Daniel\\Desktop\\SmartStock\\SmartStock_Backups\\SmartStock_" + fechaHora + ".sql";
-		String comando = "cmd /c \"C:\\xampp\\mysql\\bin\\mysqldump.exe -u Daniel -p1234 smartstockdb > " + rutaBackup + "\"";		
+		String comando = "cmd /c \"C:\\xampp\\mysql\\bin\\mysqldump.exe -u Daniel -pDaniel1234 smartstockdb > " + rutaBackup + "\"";		
 		
 		try {
 	        // Ejecuta el comando para realizar la copia

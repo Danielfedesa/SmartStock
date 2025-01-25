@@ -226,6 +226,19 @@ public class Producto {
 	}
 	
 	/**
+	 * Metodo para listar los productos con stock por debajo 
+	 * del mínimo en la base de datos mediante un objeto del dao.
+	 * @return Lista de objetos Producto que representa todos los productos
+	 * con stock bajo almacenadas en la base de datos.
+	 * @throws SQLException
+	 */
+	public List<Producto> listarProductosStockBajo() throws SQLException {
+		DaoProducto daoProducto = new DaoProducto();
+		
+		return daoProducto.listarStockBajo();
+	}
+	
+	/**
      * Metodo para recuperar un producto por su ID y cargar sus datos.
      * @param idProducto Identificador unico del producto a recuperar.
      * @return Objeto Producto recuperado de la base de datos.

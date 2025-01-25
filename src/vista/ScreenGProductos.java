@@ -130,6 +130,32 @@ public class ScreenGProductos extends JFrame {
         tablaProductos.getColumnModel().getColumn(7).setPreferredWidth(40); // Botón Editar
         tablaProductos.getColumnModel().getColumn(8).setPreferredWidth(40); // Botón Eliminar
 
+     // Renderizador para la columna Stock que cambia de color si es menor que el stock mínimo
+        tablaProductos.getColumnModel().getColumn(4).setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
+            JLabel label = new JLabel();
+            label.setOpaque(true); // Necesario para cambiar el color de fondo
+
+            // Obtener los valores de stock y stock mínimo desde la tabla
+            int stock = Integer.parseInt(table.getValueAt(row, 4).toString());
+            int stockMinimo = Integer.parseInt(table.getValueAt(row, 5).toString());
+
+            // Si la celda está seleccionada, establecer el color de selección predeterminado
+            if (isSelected) {
+                label.setBackground(table.getSelectionBackground());
+            } else {
+                // Si el stock es menor que el stock mínimo, cambiar el color de fondo a naranja
+                if (stock < stockMinimo) {
+                    label.setBackground(Color.ORANGE);
+                } else {
+                    // Establecer el color predeterminado de fondo
+                    label.setBackground(table.getBackground());
+                }
+            }
+
+            label.setText(value.toString()); // Establecer el valor del stock en la celda
+            return label; // Devolver la celda personalizada
+        });
+        
         // Rellenar la tabla con datos desde el backend.
         cargarDatosTabla(modeloTabla);
 

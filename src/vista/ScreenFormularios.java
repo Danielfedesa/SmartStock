@@ -358,11 +358,13 @@ public class ScreenFormularios {
             gbc.gridy = 5;
             panelFormulario.add(rolLabel, gbc);
 
-            JTextField rolField = new JTextField(usuarioEditar.getRol());
+            JTextField rolField = new JTextField();
             rolField.setPreferredSize(campoTamanio);
+            String[] opcionesRol = {"","empleado", "admin"};
+            JComboBox<String> rolCombo = new JComboBox<>(opcionesRol);
             gbc.gridx = 1;
             gbc.gridy = 5;
-            panelFormulario.add(rolField, gbc);
+            panelFormulario.add(rolCombo, gbc);
 
             // Botón "Aplicar Cambios".
             JButton aplicarCambios = new JButton("Aplicar Cambios");
@@ -373,7 +375,7 @@ public class ScreenFormularios {
                     usuarioEditar.setApellido2(apellido2Field.getText());
                     usuarioEditar.setTelefono(Integer.parseInt(telefonoField.getText()));
                     usuarioEditar.setEmail(emailField.getText());
-                    usuarioEditar.setRol(rolField.getText());
+                    usuarioEditar.setRol((String) rolCombo.getSelectedItem());
 
                     usuarioEditar.actualizarUsuario(); // Actualiza en la base de datos.
                     JOptionPane.showMessageDialog(formularioEdicion, "Usuario actualizado correctamente.");
@@ -491,9 +493,11 @@ public class ScreenFormularios {
 
         JTextField rolField = new JTextField();
         rolField.setPreferredSize(campoTamanio);
+        String[] opcionesRol = {"","empleado", "admin"};
+        JComboBox<String> rolCombo = new JComboBox<>(opcionesRol);
         gbc.gridx = 1;
         gbc.gridy = 6;
-        panelFormulario.add(rolField, gbc);
+        panelFormulario.add(rolCombo, gbc);
 
         // Botón aplicar cambios
         JButton aplicarCambios = new JButton("Añadir usuario");
@@ -506,7 +510,8 @@ public class ScreenFormularios {
                 nuevoUsuario.setTelefono(Integer.parseInt(telefonoField.getText()));
                 nuevoUsuario.setEmail(emailField.getText());
                 nuevoUsuario.setContrasena(contrasenaField.getText());
-                nuevoUsuario.setRol(rolField.getText());
+                nuevoUsuario.setRol((String) rolCombo.getSelectedItem());
+
 
                 nuevoUsuario.crearUsuario(); // Llama al método para crear el usuario en la base de datos.
                 JOptionPane.showMessageDialog(formularioInsertar, "Usuario creado correctamente.");

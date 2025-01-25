@@ -91,6 +91,35 @@ public class DaoProducto {
 	}
 	
 	/**
+	 * Metodo para listar todos los productos con stock bajo de la base de datos.
+	 * @return ArrayList de Producto con los datos de los productos.
+	 * @throws SQLException Si hay un error de lectura en base de datos
+	 */
+	public ArrayList<Producto> listarStockBajo() throws SQLException {
+		
+		String sql = "SELECT * FROM productos WHERE stock < stock_Minimo";
+		
+		PreparedStatement ps = con.prepareStatement(sql);
+		
+		ResultSet rs = ps.executeQuery();
+		
+		ArrayList<Producto> result = null;
+		
+		while (rs.next()) {
+			if (result == null) {
+				result = new ArrayList<Producto>();
+			}
+			
+			result.add(new Producto(rs.getInt(1), rs.getString(2), rs.getString(3),
+					rs.getDouble(4), rs.getInt(5), rs.getInt(6), rs.getInt(7)));
+		}
+		
+		ps.close();
+		
+		return result;
+	}
+	
+	/**
 	 * Metodo para leer un producto de la base de datos por su ID y modificarlo
 	 * posteriormente.
 	 * @param idProducto ID del producto a leer.

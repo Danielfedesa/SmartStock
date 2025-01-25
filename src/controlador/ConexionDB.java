@@ -34,7 +34,7 @@ public class ConexionDB {
 		// conectada.
 		if (instance == null) {
 
-			instance = DriverManager.getConnection(JDBC_URL, "Daniel", "1234");
+			instance = DriverManager.getConnection(JDBC_URL, "Daniel", "Daniel1234");
 		}
 		return instance;
 	}
