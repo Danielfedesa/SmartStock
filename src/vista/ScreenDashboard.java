@@ -1,87 +1,49 @@
 package vista;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import javax.swing.*;
 import controlador.Login;
 import controlador.UsuarioSesion;
-import modelo.HistorialInventario;
-import modelo.Producto;
+import modelo.*;
 
 public class ScreenDashboard extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
     public ScreenDashboard() {
-        // Ventana
+        // Configuración de la ventana
         setTitle("SmartStock - Dashboard");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setMinimumSize(new Dimension(800, 600));
 
-        // Estilos
+        // Colores y fuentes
         Color fondoColor = new Color(240, 240, 240);
-        Color botonColor = new Color(70, 130, 180);
-        Color textoBotonColor = Color.white;
         Font fuenteTitulo = new Font("Arial", Font.BOLD, 24);
-        Font fuenteBotones = new Font("Arial", Font.PLAIN, 16);
-
-        // Configuración del fondo
-        getContentPane().setBackground(fondoColor);
 
         // Panel principal
         JPanel contenedor = new JPanel(new GridBagLayout());
         contenedor.setBackground(fondoColor);
 
-        // Panel superior con el botón "Cerrar Sesión"
+        // Panel superior con el botón de "Cerrar Sesión"
         JPanel panelSuperior = new JPanel(new GridBagLayout());
         panelSuperior.setBackground(fondoColor);
-
         GridBagConstraints gbcSuperior = new GridBagConstraints();
-        gbcSuperior.insets = new Insets(10, 10, 10, 10); // Margen
-        gbcSuperior.gridx = 0;
+        gbcSuperior.insets = new Insets(10, 10, 10, 10);
+        gbcSuperior.gridx = 1;  
         gbcSuperior.gridy = 0;
-        gbcSuperior.anchor = GridBagConstraints.WEST; // Botón alineado a la izquierda
+        gbcSuperior.weightx = 1; 
+        gbcSuperior.anchor = GridBagConstraints.EAST;
 
-        JButton botonCerrarSesion = new JButton("Cerrar Sesión");
-        botonCerrarSesion.setFont(new Font("Arial", Font.PLAIN, 14));
-        botonCerrarSesion.setBackground(new Color(220, 53, 69)); // Color rojo
-        botonCerrarSesion.setForeground(Color.WHITE);
-        botonCerrarSesion.setFocusPainted(false);
-        botonCerrarSesion.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(200, 40, 55), 1),
-                BorderFactory.createEmptyBorder(5, 15, 5, 15)
-        ));
-        botonCerrarSesion.addActionListener(e -> {
-            int confirmacion = JOptionPane.showConfirmDialog(
-                    this,
-                    "¿Estás seguro de que deseas cerrar sesión?",
-                    "Confirmar Cierre de Sesión",
-                    JOptionPane.YES_NO_OPTION
-            );
-
-            if (confirmacion == JOptionPane.YES_OPTION) {
-                UsuarioSesion.cerrarSesion(); // Limpia la sesión actual
-                dispose(); // Cierra la ventana actual
-                new ScreenLogin(new Login()).setVisible(true); // Redirige a la pantalla de inicio de sesión
-            }
-        });
-
+        // Imagen para "Cerrar Sesión"
+        JPanel botonCerrarSesion = createImageButton("salida.png", "Cerrar Sesión", this::cerrarSesion, 20, 20);
         panelSuperior.add(botonCerrarSesion, gbcSuperior);
 
-        // Añadir el panel superior al contenedor principal
+        // Agregar el panel superior al contenedor principal
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -89,86 +51,135 @@ public class ScreenDashboard extends JFrame {
         gbc.insets = new Insets(10, 10, 10, 10);
         contenedor.add(panelSuperior, gbc);
 
-        // Panel del menú
-        JPanel panelMenu = new JPanel(new GridBagLayout());
-        panelMenu.setPreferredSize(new Dimension(1400, 1300));
-        panelMenu.setBackground(fondoColor);
-        panelMenu.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        // Panel del título centrado pero más arriba
+        JPanel panelTitulo = new JPanel(new GridBagLayout());
+        panelTitulo.setBackground(fondoColor);
 
-        // Componentes
-        JLabel tituloLabel = new JLabel("Dashboard inventario", SwingConstants.CENTER);
+        // Crear y configurar el JLabel centrado
+        JLabel tituloLabel = new JLabel("DASHBOARD", SwingConstants.CENTER);
         tituloLabel.setFont(fuenteTitulo);
         tituloLabel.setForeground(Color.DARK_GRAY);
 
-        JButton inventario = new JButton("Inventario");
-        configBoton(inventario, botonColor, textoBotonColor, fuenteBotones);
+        // Configuración del GridBagConstraints para el título
+        GridBagConstraints gbcTitulo = new GridBagConstraints();
+        gbcTitulo.gridx = 0;
+        gbcTitulo.gridy = 1; 
+        gbcTitulo.gridwidth = 3; 
+        gbcTitulo.anchor = GridBagConstraints.CENTER;
+        gbcTitulo.fill = GridBagConstraints.HORIZONTAL;
+        gbcTitulo.insets = new Insets(0, 0, 5, 0); 
+        gbcTitulo.weighty = 0.05; 
 
-        JButton movInventario = new JButton("Movimientos de inventario");
-        configBoton(movInventario, botonColor, textoBotonColor, fuenteBotones);
+        // Agregar el título al panel de título
+        panelTitulo.add(tituloLabel, gbcTitulo);
 
-        // Acciones de los botones
-        inventario.addActionListener(e -> abrirInventario());
-        movInventario.addActionListener(e -> abrirMovInventario());
-
-        // Añadir componentes al panel del menú
-        gbc.gridy = 1; // Comienza después del panel superior
-        gbc.gridx = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 10, 10, 10);
-
-        panelMenu.add(tituloLabel, gbc);
-
-        gbc.gridy++;
-        panelMenu.add(inventario, gbc);
-
-        gbc.gridy++;
-        panelMenu.add(movInventario, gbc);
-
-        // Añadir el panel del menú al contenedor principal
+        // Agregar el panel del título al contenedor principal
         gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridwidth = 3;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        contenedor.add(panelTitulo, gbc);
+
+        // Panel del menú con iconos
+        JPanel panelMenu = new JPanel(new GridBagLayout());
+        panelMenu.setPreferredSize(new Dimension(800, 600));
+        panelMenu.setBackground(fondoColor);
+        panelMenu.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Creación de botones con imágenes y texto con espaciado
+      
+        JPanel inventario = createImageButton("inventario.png", "Inventario", this::abrirInventario, 50, 50);
+        JPanel movInventario = createImageButton("movimientos.png", "Movimientos de Inventario", this::abrirMovInventario, 50, 50);       
+        JPanel chat = createImageButton("chat.png", "Chat", this::abrirChat, 50, 50);       
+
+        // Asegurar que el panel de botones está en `gbc.gridy = 2` para evitar que el título lo pise
+        gbc.gridy = 2;
+        gbc.insets = new Insets(10, 10, 10, 10);
         contenedor.add(panelMenu, gbc);
 
-        // Añadir el contenedor a la ventana
+        // Primera fila
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridx = 0;
+        panelMenu.add(inventario, gbc);
+        gbc.gridx = 1;
+        panelMenu.add(movInventario, gbc);
+        gbc.gridx = 2;
+        panelMenu.add(chat, gbc);
+
+        // Agregar el contenedor a la ventana
         add(contenedor);
     }
 
-    private void configBoton(JButton boton, Color fondo, Color texto, Font fuente) {
-        boton.setFont(fuente);
-        boton.setBackground(fondo);
-        boton.setForeground(texto);
-        boton.setFocusPainted(false);
-        boton.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(fondo.darker(), 1),
-                BorderFactory.createEmptyBorder(5, 15, 5, 15)
-        ));
-        boton.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                boton.setBackground(fondo.brighter());
-            }
+    private JPanel createImageButton(String imagePath, String texto, Runnable action, int width, int height) {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setOpaque(false);
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); 
+        
+        File file = new File("src/imagenes/" + imagePath);
+        if (!file.exists()) {
+            System.err.println("No se encontró la imagen: " + file.getAbsolutePath());
+            return new JPanel();
+        }
 
+        ImageIcon icon = new ImageIcon(file.getAbsolutePath());
+        Image image = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        icon = new ImageIcon(image);
+
+        JLabel labelIcon = new JLabel(icon);
+        labelIcon.setHorizontalAlignment(SwingConstants.CENTER);
+        labelIcon.setVerticalAlignment(SwingConstants.CENTER);
+        labelIcon.setPreferredSize(new Dimension(width + 20, height + 20));
+
+        JLabel labelTexto = new JLabel(texto, SwingConstants.CENTER);
+        labelTexto.setFont(new Font("Arial", Font.BOLD, 12));
+        labelTexto.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0)); // Aumenta la separación superior
+
+        
+        panel.add(labelIcon, BorderLayout.CENTER);
+        panel.add(labelTexto, BorderLayout.SOUTH);
+
+        panel.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                boton.setBackground(fondo);
+            public void mouseClicked(MouseEvent e) {
+                action.run();
             }
         });
+
+        return panel;
+    }
+
+    private void cerrarSesion() {
+        int confirmacion = JOptionPane.showConfirmDialog(
+                this,
+                "¿Estás seguro de que deseas cerrar sesión?",
+                "Confirmar Cierre de Sesión",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            UsuarioSesion.cerrarSesion();
+            dispose();
+            new ScreenLogin(new Login()).setVisible(true);
+        }
     }
 
     private void abrirInventario() {
-        Producto inv = new Producto();
-        new ScreenGInventario(inv).setVisible(true);
+        new ScreenGInventario(new Producto()).setVisible(true);
         this.dispose();
     }
 
     private void abrirMovInventario() {
-        HistorialInventario his = new HistorialInventario();
-        new ScreenGHistorialInventario(his).setVisible(true);
+        new ScreenGHistorialInventario(new HistorialInventario()).setVisible(true);
         this.dispose();
     }
 
+    private void abrirChat() {
+        new ScreenAlertasStock(new Producto()).setVisible(true);
+        this.dispose();
+    }
+    
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new ScreenDashboard().setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> new ScreenDashboard().setVisible(true));
     }
 }

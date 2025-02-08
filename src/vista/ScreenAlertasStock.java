@@ -17,7 +17,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import modelo.Producto;
@@ -152,14 +151,6 @@ public class ScreenAlertasStock extends JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al cargar los productos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            Producto producto = new Producto(); // Instancia de Usuario que gestiona la lógica.
-            new ScreenGProductos(producto).setVisible(true);
-        });
-        
     }
    
 }

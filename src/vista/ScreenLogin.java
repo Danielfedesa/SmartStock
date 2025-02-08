@@ -20,11 +20,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import Procesos.BackupAutomatico;
-import Procesos.SupervisorStock;
 import controlador.Login;
 import controlador.UsuarioSesion;
 import modelo.Usuario;
+import procesos.BackupAutomatico;
+import procesos.SupervisorStock;
 
 public class ScreenLogin extends JFrame {
 
